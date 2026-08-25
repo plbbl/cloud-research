@@ -3,113 +3,145 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f4f1e9" />
-    <title>Cloud Research — Your persistent research team</title>
+    <meta name="theme-color" content="#fcfcfb" />
+    <title>Cloud Research</title>
     <meta
       name="description"
-      content="A persistent multi-agent research lab powered by Gemini, Google ADK, and Cloud Run."
+      content="A persistent team of AI researchers powered by Gemini, Google ADK, and Cloud Run."
     />
+    <link rel="icon" href="/static/cloud-research-icon.png" />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="Cloud Research home">
-        <svg class="mark" viewBox="0 0 40 40" role="img" aria-label="Six experts around one PI">
-          <circle cx="20" cy="20" r="4"></circle>
-          <circle cx="20" cy="5" r="2.6"></circle>
-          <circle cx="33" cy="12.5" r="2.6"></circle>
-          <circle cx="33" cy="27.5" r="2.6"></circle>
-          <circle cx="20" cy="35" r="2.6"></circle>
-          <circle cx="7" cy="27.5" r="2.6"></circle>
-          <circle cx="7" cy="12.5" r="2.6"></circle>
-          <path d="M20 8v8m10-2-7 4m7 8-7-4m-3 10v-8M10 26l7-4m-7-8 7 4"></path>
-        </svg>
-        <span>Cloud Research</span>
-      </a>
-      <div class="cloud-proof" aria-label="Google stack">
-        <i></i>
-        Gemini 3.7 Flash&nbsp;&nbsp;·&nbsp;&nbsp;Google ADK&nbsp;&nbsp;·&nbsp;&nbsp;Cloud Run
-      </div>
-    </header>
-
-    <main>
-      <section class="brief" aria-labelledby="hero-title">
-        <p class="eyebrow">A PERSISTENT PANEL OF AI RESEARCHERS</p>
-        <h1 id="hero-title">Put a research team<br />behind every thought.</h1>
-        <p class="thesis">
-          You remain the PI. Six Gemini experts keep searching, reasoning, testing, challenging,
-          writing, and explaining—long after you step away.
-        </p>
-
-        <div class="mode-switch" role="group" aria-label="Choose a task">
-          <button class="mode active" data-mode="research" type="button">Research</button>
-          <button class="mode" data-mode="explain" type="button">Explain</button>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Cloud Research navigation">
+        <div class="sidebar-header">
+          <a class="brand" href="/" aria-label="Cloud Research home">
+            <span class="brand-icon"><img src="/static/cloud-research-icon.png" alt="" /></span>
+            <span>Cloud Research</span>
+          </a>
+          <button class="sidebar-close" id="sidebar-close" type="button" aria-label="Close menu">
+            ×
+          </button>
         </div>
 
-        <form id="research-form">
-          <label for="research-brief">One brief. An entire lab.</label>
-          <textarea
-            id="research-brief"
-            name="brief"
-            rows="7"
-            required
-            placeholder="Give the field, the question, what you already know, your compute, and what would make tomorrow useful…"
-          ></textarea>
-          <div class="launch-row">
-            <p id="prompt-hint">The Director chooses who works, in what order, and for how long.</p>
-            <button class="launch" type="submit">
-              <span>Start research</span>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4"></path></svg>
-            </button>
-          </div>
-        </form>
-
-        <button class="example" id="example" type="button">
-          <span>TRY A BRIEF</span>
-          Find a cheap, falsifiable research opening in small-model test-time adaptation that one
-          24 GB GPU can investigate.
+        <button class="new-research" id="new-research" type="button">
+          <span aria-hidden="true">+</span>
+          New research
         </button>
-      </section>
 
-      <section class="lab" aria-labelledby="lab-title">
-        <div class="lab-heading">
-          <div>
-            <p class="eyebrow blue">LIVE RESEARCH NOTEBOOK</p>
-            <h2 id="lab-title">The team thinks in public.</h2>
-          </div>
-          <div class="pulse" id="pulse" aria-label="Lab idle"><span></span> READY</div>
-        </div>
+        <nav class="primary-nav" aria-label="Research modes">
+          <button class="nav-item active" data-nav-mode="research" type="button">
+            <span class="nav-glyph" aria-hidden="true">R</span>
+            <span>
+              <strong>Research</strong>
+              <small>Find, test, and write</small>
+            </span>
+          </button>
+          <button class="nav-item" data-nav-mode="explain" type="button">
+            <span class="nav-glyph" aria-hidden="true">E</span>
+            <span>
+              <strong>Explain</strong>
+              <small>Understand a paper or result</small>
+            </span>
+          </button>
+        </nav>
 
-        <div class="experts" id="experts" aria-label="Research experts">
-          <span data-agent="finder">01&nbsp; FINDER</span>
-          <span data-agent="theorist">02&nbsp; THEORIST</span>
-          <span data-agent="experimentalist">03&nbsp; EXPERIMENTALIST</span>
-          <span data-agent="critic">04&nbsp; CRITIC</span>
-          <span data-agent="writer">05&nbsp; WRITER</span>
-          <span data-agent="explainer">06&nbsp; EXPLAINER</span>
-        </div>
+        <section class="team" aria-labelledby="team-title">
+          <h2 id="team-title">Your research team</h2>
+          <ul>
+            <li data-agent="finder"><span>F</span>Finder</li>
+            <li data-agent="theorist"><span>T</span>Theorist</li>
+            <li data-agent="experimentalist"><span>E</span>Experimentalist</li>
+            <li data-agent="critic"><span>C</span>Critic</li>
+            <li data-agent="writer"><span>W</span>Writer</li>
+            <li data-agent="explainer"><span>X</span>Explainer</li>
+          </ul>
+        </section>
 
-        <div class="notebook" id="notebook" aria-live="polite">
-          <div class="notebook-intro" id="intro">
-            <p class="folio">RESEARCH CONTINUES / 24—7</p>
-            <blockquote>
-              “Trust that a valuable opening exists.<br />Doubt that the current candidate is it.”
-            </blockquote>
-            <p>
-              There is no scripted pipeline. The Research Director recruits the right expert for
-              the evidence in front of it, then leaves a handoff a human can challenge and continue.
-            </p>
-          </div>
-          <div id="transcript"></div>
-        </div>
-
-        <footer class="lab-footer">
-          <span>HUMAN</span><i></i><span>PI</span><i></i><span>AGENT TEAM</span><i></i><span>EVIDENCE</span>
+        <footer class="runtime">
+          <span class="runtime-status" aria-hidden="true"></span>
+          <span>
+            <strong>Google Cloud</strong>
+            <small>Gemini 3.7 Flash</small>
+          </span>
         </footer>
-      </section>
-    </main>
+      </aside>
+
+      <button class="sidebar-scrim" id="sidebar-scrim" type="button" aria-label="Close menu"></button>
+
+      <main class="workspace">
+        <header class="workspace-header">
+          <button class="sidebar-open" id="sidebar-open" type="button" aria-label="Open menu">
+            ☰
+          </button>
+          <div class="workspace-name" id="workspace-name">New research</div>
+          <div class="workspace-state" id="workspace-state">Private workspace</div>
+        </header>
+
+        <section class="start-screen" id="start-screen" aria-labelledby="start-title">
+          <div class="greeting">
+            <span class="hero-icon"><img src="/static/cloud-research-icon.png" alt="" /></span>
+            <h1 id="start-title">What should the lab pursue?</h1>
+            <p>One brief gives you a persistent team of six AI researchers.</p>
+          </div>
+
+          <div class="start-dock" id="start-dock">
+            <form class="composer" id="research-form">
+              <label class="sr-only" for="research-brief">Research brief</label>
+              <textarea
+                id="research-brief"
+                name="brief"
+                rows="3"
+                required
+                placeholder="Describe the field, question, compute, and what a useful handoff should contain"
+              ></textarea>
+              <div class="composer-bar">
+                <div class="mode-switch" role="group" aria-label="Choose a mode">
+                  <button class="mode active" data-mode="research" type="button">Research</button>
+                  <button class="mode" data-mode="explain" type="button">Explain</button>
+                </div>
+                <div class="composer-meta">
+                  <span class="execution-mode" id="execution-mode">Google Cloud</span>
+                  <span class="model-name">Gemini 3.7 Flash</span>
+                  <button class="send" id="send" type="submit" aria-label="Start research">↑</button>
+                </div>
+              </div>
+            </form>
+            <p class="composer-hint" id="prompt-hint">
+              The Director chooses the experts and keeps the work moving.
+            </p>
+            <div class="suggestions" aria-label="Example briefs">
+              <button
+                type="button"
+                data-suggestion-mode="research"
+                data-suggestion="I have one 24 GB GPU. Find a cheap, falsifiable research task in small-model test-time adaptation."
+              >
+                Find a task for one 24 GB GPU
+              </button>
+              <button
+                type="button"
+                data-suggestion-mode="explain"
+                data-suggestion="Explain this paper by separating its default belief, surprising idea, evidence, uncertainty, and the next experiment."
+              >
+                Understand a paper before I commit
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="conversation" id="conversation" hidden aria-live="polite">
+          <header class="conversation-header">
+            <p id="conversation-mode">Research shift</p>
+            <h1 id="conversation-title">Untitled research</h1>
+          </header>
+          <div class="transcript" id="transcript"></div>
+        </section>
+
+        <div class="conversation-dock" id="conversation-dock" hidden></div>
+      </main>
+    </div>
 
     <script src="/static/app.js" defer></script>
   </body>
 </html>
-

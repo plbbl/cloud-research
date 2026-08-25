@@ -25,8 +25,9 @@ def test_demo_surface_is_served() -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "Put a research team" in response.text
-    assert "EXPLAINER" in response.text
+    assert "What should the lab pursue?" in response.text
+    assert "Your research team" in response.text
+    assert "/static/cloud-research-icon.png" in response.text
 
 
 def test_background_dispatch_is_off_until_cloud_job_is_configured(monkeypatch) -> None:

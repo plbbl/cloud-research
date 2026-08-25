@@ -74,6 +74,11 @@ See [`docs/GOOGLE_CLOUD.md`](docs/GOOGLE_CLOUD.md). The deployment is private an
 zero minimum / one maximum Cloud Run instance by default so the free-trial credit remains under
 control.
 
+## Verified live
+
+See [`docs/SMOKE_TESTS.md`](docs/SMOKE_TESTS.md) for the real private-service and Cloud Run Job
+tests, their outputs, and the two defects those tests exposed and fixed.
+
 ## Where the existing system went
 
 See [`docs/MODULE_MAP.md`](docs/MODULE_MAP.md). Only scientific taste and small pure helpers were

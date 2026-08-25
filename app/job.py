@@ -52,4 +52,4 @@ async def run() -> str:
 
 
 if __name__ == "__main__":
-    print(asyncio.run(run()), flush=True)
+    asyncio.run(run())
