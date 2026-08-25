@@ -51,28 +51,40 @@
           <h2 id="team-title">Your research team</h2>
           <ul>
             <li data-agent="finder">
-              <span class="agent-mark">F</span>
-              <span class="agent-copy"><strong>Finder</strong><small>Ready</small></span>
+              <button class="team-member" data-mention="Finder" type="button">
+                <span class="agent-avatar finder" aria-hidden="true"></span>
+                <span class="agent-copy"><strong>Finder</strong><small>Ready</small></span>
+              </button>
             </li>
             <li data-agent="theorist">
-              <span class="agent-mark">T</span>
-              <span class="agent-copy"><strong>Theorist</strong><small>Ready</small></span>
+              <button class="team-member" data-mention="Theorist" type="button">
+                <span class="agent-avatar theorist" aria-hidden="true"></span>
+                <span class="agent-copy"><strong>Theorist</strong><small>Ready</small></span>
+              </button>
             </li>
             <li data-agent="experimentalist">
-              <span class="agent-mark">E</span>
-              <span class="agent-copy"><strong>Experimentalist</strong><small>Ready</small></span>
+              <button class="team-member" data-mention="Experimentalist" type="button">
+                <span class="agent-avatar experimentalist" aria-hidden="true"></span>
+                <span class="agent-copy"><strong>Experimentalist</strong><small>Ready</small></span>
+              </button>
             </li>
             <li data-agent="critic">
-              <span class="agent-mark">C</span>
-              <span class="agent-copy"><strong>Critic</strong><small>Ready</small></span>
+              <button class="team-member" data-mention="Critic" type="button">
+                <span class="agent-avatar critic" aria-hidden="true"></span>
+                <span class="agent-copy"><strong>Critic</strong><small>Ready</small></span>
+              </button>
             </li>
             <li data-agent="writer">
-              <span class="agent-mark">W</span>
-              <span class="agent-copy"><strong>Writer</strong><small>Ready</small></span>
+              <button class="team-member" data-mention="Writer" type="button">
+                <span class="agent-avatar writer" aria-hidden="true"></span>
+                <span class="agent-copy"><strong>Writer</strong><small>Ready</small></span>
+              </button>
             </li>
             <li data-agent="explainer">
-              <span class="agent-mark">X</span>
-              <span class="agent-copy"><strong>Explainer</strong><small>Ready</small></span>
+              <button class="team-member" data-mention="Explainer" type="button">
+                <span class="agent-avatar explainer" aria-hidden="true"></span>
+                <span class="agent-copy"><strong>Explainer</strong><small>Ready</small></span>
+              </button>
             </li>
           </ul>
         </section>
@@ -146,8 +158,39 @@
                 name="brief"
                 rows="3"
                 required
-                placeholder="Describe the field, question, compute, and what a useful handoff should contain"
+                placeholder="Message the lab. Type @ to assign a researcher"
               ></textarea>
+              <div class="mention-menu" id="mention-menu" hidden role="listbox" aria-label="Assign a lab member">
+                <p>Assign a lab member</p>
+                <button data-mention="Everyone" data-agent="director" type="button" role="option">
+                  <span class="agent-avatar everyone" aria-hidden="true"></span>
+                  <span><strong>Everyone</strong><small>Open to the whole lab</small></span>
+                </button>
+                <button data-mention="Finder" data-agent="finder" type="button" role="option">
+                  <span class="agent-avatar finder" aria-hidden="true"></span>
+                  <span><strong>Finder</strong><small>Literature and novelty</small></span>
+                </button>
+                <button data-mention="Theorist" data-agent="theorist" type="button" role="option">
+                  <span class="agent-avatar theorist" aria-hidden="true"></span>
+                  <span><strong>Theorist</strong><small>Mechanisms and claims</small></span>
+                </button>
+                <button data-mention="Experimentalist" data-agent="experimentalist" type="button" role="option">
+                  <span class="agent-avatar experimentalist" aria-hidden="true"></span>
+                  <span><strong>Experimentalist</strong><small>Cheap decisive probes</small></span>
+                </button>
+                <button data-mention="Critic" data-agent="critic" type="button" role="option">
+                  <span class="agent-avatar critic" aria-hidden="true"></span>
+                  <span><strong>Critic</strong><small>Falsification and repair</small></span>
+                </button>
+                <button data-mention="Writer" data-agent="writer" type="button" role="option">
+                  <span class="agent-avatar writer" aria-hidden="true"></span>
+                  <span><strong>Writer</strong><small>Research handoff</small></span>
+                </button>
+                <button data-mention="Explainer" data-agent="explainer" type="button" role="option">
+                  <span class="agent-avatar explainer" aria-hidden="true"></span>
+                  <span><strong>Explainer</strong><small>Papers, tasks, and results</small></span>
+                </button>
+              </div>
               <div class="explain-targets" id="explain-targets" hidden role="group" aria-label="What to explain">
                 <button class="active" data-explain-target="paper" type="button" aria-pressed="true">Paper</button>
                 <button data-explain-target="task" type="button" aria-pressed="false">Task</button>
@@ -155,9 +198,12 @@
                 <button data-explain-target="result" type="button" aria-pressed="false">Result</button>
               </div>
               <div class="composer-bar">
-                <div class="mode-switch" role="group" aria-label="Choose a mode">
-                  <button class="mode active" data-mode="research" type="button">Research</button>
-                  <button class="mode" data-mode="explain" type="button">Explain</button>
+                <div class="composer-left">
+                  <button class="mention-trigger" id="mention-trigger" type="button" aria-label="Mention a lab member">@</button>
+                  <div class="mode-switch" role="group" aria-label="Choose a mode">
+                    <button class="mode active" data-mode="research" type="button">Research</button>
+                    <button class="mode" data-mode="explain" type="button">Explain</button>
+                  </div>
                 </div>
                 <div class="composer-meta">
                   <span class="execution-mode" id="execution-mode">Google Cloud</span>
@@ -189,17 +235,63 @@
         </section>
 
         <section class="conversation" id="conversation" hidden aria-live="polite">
-          <header class="conversation-header">
-            <div class="conversation-heading">
-              <p id="conversation-mode">Research shift</p>
-              <h1 id="conversation-title">Untitled research</h1>
+          <header class="lab-chat-header">
+            <div class="lab-chat-identity">
+              <div class="agent-stack" aria-hidden="true">
+                <span class="agent-avatar finder"></span>
+                <span class="agent-avatar theorist"></span>
+                <span class="agent-avatar experimentalist"></span>
+                <span class="agent-avatar critic"></span>
+              </div>
+              <div class="conversation-heading">
+                <h1>Cloud Research Lab</h1>
+                <p><span id="conversation-mode">Research shift</span><span aria-hidden="true"> · </span><span id="conversation-title">Untitled research</span></p>
+              </div>
             </div>
-            <div class="lab-slot conversation-lab-slot" id="conversation-lab-slot"></div>
+            <button class="members-toggle" id="members-toggle" type="button" aria-expanded="false" aria-controls="members-panel">Members</button>
           </header>
           <div class="transcript" id="transcript"></div>
+          <aside class="members-panel" id="members-panel" aria-labelledby="members-title">
+            <div class="members-heading">
+              <div>
+                <h2 id="members-title">Lab members</h2>
+                <p>Click anyone to assign them</p>
+              </div>
+              <button class="members-close" id="members-close" type="button" aria-label="Close members">×</button>
+            </div>
+            <div class="lab-slot conversation-lab-slot" id="conversation-lab-slot"></div>
+            <div class="member-list">
+              <button class="lab-member" data-agent="finder" data-mention="Finder" type="button">
+                <span class="agent-avatar finder" aria-hidden="true"></span>
+                <span><strong>Finder</strong><small>Literature and novelty</small></span>
+              </button>
+              <button class="lab-member" data-agent="theorist" data-mention="Theorist" type="button">
+                <span class="agent-avatar theorist" aria-hidden="true"></span>
+                <span><strong>Theorist</strong><small>Mechanisms and claims</small></span>
+              </button>
+              <button class="lab-member" data-agent="experimentalist" data-mention="Experimentalist" type="button">
+                <span class="agent-avatar experimentalist" aria-hidden="true"></span>
+                <span><strong>Experimentalist</strong><small>Decisive probes</small></span>
+              </button>
+              <button class="lab-member" data-agent="critic" data-mention="Critic" type="button">
+                <span class="agent-avatar critic" aria-hidden="true"></span>
+                <span><strong>Critic</strong><small>Falsification and repair</small></span>
+              </button>
+              <button class="lab-member" data-agent="writer" data-mention="Writer" type="button">
+                <span class="agent-avatar writer" aria-hidden="true"></span>
+                <span><strong>Writer</strong><small>Research handoff</small></span>
+              </button>
+              <button class="lab-member" data-agent="explainer" data-mention="Explainer" type="button">
+                <span class="agent-avatar explainer" aria-hidden="true"></span>
+                <span><strong>Explainer</strong><small>Working understanding</small></span>
+              </button>
+            </div>
+            <p class="members-note">You are the PI. The lab keeps the research moving.</p>
+          </aside>
         </section>
 
         <div class="conversation-dock" id="conversation-dock" hidden></div>
+        <button class="members-scrim" id="members-scrim" type="button" aria-label="Close members"></button>
       </main>
     </div>
 

@@ -56,7 +56,10 @@ The shared idea is: **Trust the opportunity. Doubt the candidate. Keep going.**
 
 The workspace shows the lab as it actually works:
 
-- an animated Cloud Research Lab Bot changes gaze, expression, gesture, and task feedback;
+- the workspace becomes a group conversation where the human PI can address the whole lab or
+  `@Finder`, `@Critic`, `@Explainer`, and the other experts directly;
+- each ADK response enters the same discussion under the speaking expert's identity;
+- an animated Cloud Research Sphere changes only gaze, blink, and posture for task feedback;
 - the expert roster identifies the active researcher and its current action;
 - Cloud Run Job events are emitted as structured logs and read back into the private workspace;
 - Explainer has focused modes for a paper, task, the lab's own research, or a result;
@@ -101,4 +104,4 @@ ported. The existing system was not edited, imported, started, or given to the C
 
 The Lab Bot's eye timing adapts Rakazo's Apache-2.0 `BotAvatar` motion. See
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). The Cloud Research character, expert states,
-gestures, task feedback, and product UI are original modifications.
+group-lab interaction, task feedback, and product UI are original modifications.

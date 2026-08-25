@@ -20,6 +20,19 @@ const labAgent = document.querySelector("#lab-agent");
 const labAction = document.querySelector("#lab-action");
 const heroLabSlot = document.querySelector("#hero-lab-slot");
 const conversationLabSlot = document.querySelector("#conversation-lab-slot");
+const mentionMenu = document.querySelector("#mention-menu");
+const mentionTrigger = document.querySelector("#mention-trigger");
+const mentionOptions = [...mentionMenu.querySelectorAll("[data-mention]")];
+const assignmentButtons = [...document.querySelectorAll("[data-mention]")].filter(
+  (button) => !button.closest("#mention-menu"),
+);
+const labMemberButtons = [...document.querySelectorAll(".lab-member[data-agent]")];
+const memberRoles = new Map(
+  labMemberButtons.map((button) => [button.dataset.agent, button.querySelector("small").textContent]),
+);
+const membersToggle = document.querySelector("#members-toggle");
+const membersClose = document.querySelector("#members-close");
+const membersScrim = document.querySelector("#members-scrim");
 const modeButtons = [...document.querySelectorAll(".mode")];
 const navModeButtons = [...document.querySelectorAll("[data-nav-mode]")];
 const explainTargetButtons = [...document.querySelectorAll("[data-explain-target]")];
@@ -42,6 +55,8 @@ let currentLabState = "idle";
 let runPollTimer = 0;
 let runPollToken = 0;
 let latestResearchOutput = "";
+let visibleMentionOptions = [];
+let mentionIndex = 0;
 const streamedEntries = new Map();
 const seenRunEvents = new Set();
 
@@ -88,21 +103,31 @@ const agentPresence = {
   },
 };
 
+const agentActivity = {
+  directing: "Directing now",
+  searching: "Searching now",
+  theorizing: "Reasoning now",
+  testing: "Testing now",
+  critiquing: "Challenging now",
+  writing: "Writing now",
+  explaining: "Explaining now",
+};
+
 const modeCopy = {
   research: {
     title: "What should the lab pursue?",
-    subtitle: "One brief gives you a persistent team of six AI researchers.",
-    placeholder: "Describe the field, question, compute, and a useful research handoff",
-    hint: "The Director chooses the experts and keeps the work moving.",
+    subtitle: "Six AI researchers are here. Message everyone or @ one expert.",
+    placeholder: "Message the lab. Type @ to assign a researcher",
+    hint: "Try @Finder, @Critic, or @Explainer to speak with one expert directly.",
     workspace: "New research",
     conversation: "Research shift",
     send: "Start research",
   },
   explain: {
     title: "What should we make clear?",
-    subtitle: "Explainer turns papers, tasks, and results into working understanding.",
+    subtitle: "Bring a paper, task, or result into the lab and question it together.",
     placeholder: "Paste what you want to understand",
-    hint: "Choose what you are bringing to the lab.",
+    hint: "Choose the material, then @Explainer or invite another expert.",
     workspace: "New explanation",
     conversation: "Explanation",
     send: "Start explanation",
@@ -168,10 +193,21 @@ function setLabState(agent = "director", state = "", detail = "") {
   }
 
   expertLabels.forEach((label) => label.classList.remove("active"));
+  labMemberButtons.forEach((button) => {
+    button.classList.remove("active");
+    button.querySelector("small").textContent = memberRoles.get(button.dataset.agent);
+  });
   const activeLabel = expertLabels.find((label) => label.dataset.agent === normalizedAgent);
+  const activeMember = labMemberButtons.find(
+    (button) => button.dataset.agent === normalizedAgent,
+  );
   if (activeLabel && !["complete", "error", "idle"].includes(nextState)) {
     activeLabel.classList.add("active");
     activeLabel.querySelector("small").textContent = detail || presence.action;
+    if (activeMember) {
+      activeMember.classList.add("active");
+      activeMember.querySelector("small").textContent = agentActivity[nextState] || "Working now";
+    }
     activeExpert = normalizedAgent;
   } else if (["complete", "error"].includes(nextState)) {
     if (activeLabel) {
@@ -259,11 +295,21 @@ function closeSidebar() {
   document.body.classList.remove("sidebar-visible");
 }
 
+function setMembersVisible(visible) {
+  document.body.classList.toggle("members-visible", visible);
+  membersToggle.setAttribute("aria-expanded", String(visible));
+}
+
 document.querySelector("#sidebar-open").addEventListener("click", () => {
   document.body.classList.add("sidebar-visible");
 });
 document.querySelector("#sidebar-close").addEventListener("click", closeSidebar);
 document.querySelector("#sidebar-scrim").addEventListener("click", closeSidebar);
+membersToggle.addEventListener("click", () => {
+  setMembersVisible(!document.body.classList.contains("members-visible"));
+});
+membersClose.addEventListener("click", () => setMembersVisible(false));
+membersScrim.addEventListener("click", () => setMembersVisible(false));
 
 modeButtons.forEach((button) => {
   button.addEventListener("click", () => setMode(button.dataset.mode, true));
@@ -297,8 +343,31 @@ document.querySelector("#new-research").addEventListener("click", () => {
   closeSidebar();
 });
 
-brief.addEventListener("input", resizeComposer);
+brief.addEventListener("input", () => {
+  resizeComposer();
+  refreshMentionMenu();
+});
 brief.addEventListener("keydown", (event) => {
+  if (!mentionMenu.hidden) {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const direction = event.key === "ArrowDown" ? 1 : -1;
+      mentionIndex =
+        (mentionIndex + direction + visibleMentionOptions.length) % visibleMentionOptions.length;
+      updateMentionHighlight();
+      return;
+    }
+    if ((event.key === "Enter" || event.key === "Tab") && visibleMentionOptions.length) {
+      event.preventDefault();
+      selectMention(visibleMentionOptions[mentionIndex]);
+      return;
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMentionMenu();
+      return;
+    }
+  }
   if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
     event.preventDefault();
     if (brief.value.trim() && !working) form.requestSubmit();
@@ -310,6 +379,94 @@ function resizeComposer() {
   brief.style.height = `${Math.min(brief.scrollHeight, 190)}px`;
 }
 
+function mentionContext() {
+  const cursor = brief.selectionStart ?? brief.value.length;
+  const beforeCursor = brief.value.slice(0, cursor);
+  const match = beforeCursor.match(/(^|\s)@([a-z]*)$/i);
+  if (!match) return null;
+  return {
+    cursor,
+    query: match[2].toLowerCase(),
+    start: cursor - match[0].length + match[1].length,
+  };
+}
+
+function updateMentionHighlight() {
+  visibleMentionOptions.forEach((option, index) => {
+    const active = index === mentionIndex;
+    option.classList.toggle("mention-active", active);
+    option.setAttribute("aria-selected", String(active));
+  });
+}
+
+function closeMentionMenu() {
+  mentionMenu.hidden = true;
+  visibleMentionOptions = [];
+  mentionIndex = 0;
+}
+
+function refreshMentionMenu() {
+  const context = mentionContext();
+  if (!context) {
+    closeMentionMenu();
+    return;
+  }
+  visibleMentionOptions = mentionOptions.filter((option) =>
+    option.dataset.mention.toLowerCase().startsWith(context.query),
+  );
+  mentionOptions.forEach((option) => {
+    option.hidden = !visibleMentionOptions.includes(option);
+  });
+  if (!visibleMentionOptions.length) {
+    closeMentionMenu();
+    return;
+  }
+  mentionIndex = Math.min(mentionIndex, visibleMentionOptions.length - 1);
+  mentionMenu.hidden = false;
+  updateMentionHighlight();
+}
+
+function selectMention(option) {
+  const context = mentionContext();
+  if (!context) return;
+  brief.setRangeText(`@${option.dataset.mention} `, context.start, context.cursor, "end");
+  closeMentionMenu();
+  resizeComposer();
+  brief.focus();
+}
+
+function insertMention(name) {
+  const cursor = brief.selectionStart ?? brief.value.length;
+  const prefix = cursor > 0 && !/\s$/.test(brief.value.slice(0, cursor)) ? " " : "";
+  brief.setRangeText(`${prefix}@${name} `, cursor, cursor, "end");
+  closeMentionMenu();
+  resizeComposer();
+  brief.focus();
+}
+
+mentionTrigger.addEventListener("click", () => {
+  const cursor = brief.selectionStart ?? brief.value.length;
+  const prefix = cursor > 0 && !/\s$/.test(brief.value.slice(0, cursor)) ? " " : "";
+  brief.setRangeText(`${prefix}@`, cursor, cursor, "end");
+  brief.focus();
+  refreshMentionMenu();
+});
+
+mentionOptions.forEach((option) => {
+  option.addEventListener("click", () => selectMention(option));
+});
+
+assignmentButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    insertMention(button.dataset.mention);
+    setMembersVisible(false);
+  });
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (!event.target.closest("#research-form")) closeMentionMenu();
+});
+
 function stopRunPolling() {
   runPollToken += 1;
   window.clearTimeout(runPollTimer);
@@ -320,6 +477,8 @@ function stopRunPolling() {
 function startNewResearch(nextMode = "research") {
   if (working) return;
   stopRunPolling();
+  setMembersVisible(false);
+  closeMentionMenu();
   hasConversation = false;
   activeSessionId = "";
   sessionReady = false;
@@ -348,7 +507,7 @@ function openConversation(raw) {
   conversationLabSlot.append(labPresence);
   conversationMode.textContent = modeCopy[mode].conversation;
   conversationTitle.textContent = raw.length > 82 ? `${raw.slice(0, 79)}...` : raw;
-  workspaceName.textContent = mode === "research" ? "Active research" : "Active explanation";
+  workspaceName.textContent = "Cloud Research Lab";
   addEntry("You", raw, "human");
   brief.value = "";
   brief.style.height = "";
@@ -373,16 +532,32 @@ function addEntry(author, text, kind = "assistant") {
 
 function createEntry(author, kind) {
   const entry = document.createElement("article");
-  entry.className = `message ${kind}`;
+  entry.className = `message ${kind} message-in`;
+
+  const content = document.createElement("div");
+  content.className = "message-content";
 
   const label = document.createElement("div");
   label.className = "message-label";
-  label.textContent = author.replaceAll("_", " ");
+  const normalizedAgent = normalizeAgent(author);
+  label.textContent =
+    kind === "assistant" ? agentPresence[normalizedAgent].name : author.replaceAll("_", " ");
 
   const body = document.createElement("p");
   body.className = "message-body";
 
-  entry.append(label, body);
+  content.append(label, body);
+  if (kind === "assistant") {
+    const avatar = document.createElement("span");
+    const avatarAgent = ["director", "cloud_research"].includes(normalizedAgent)
+      ? "everyone"
+      : normalizedAgent;
+    avatar.className = `agent-avatar ${avatarAgent}`;
+    avatar.setAttribute("aria-hidden", "true");
+    entry.append(avatar, content);
+  } else {
+    entry.append(content);
+  }
   transcript.append(entry);
   return { entry, body };
 }
@@ -500,7 +675,7 @@ function consumeRunEvent(event) {
     backgroundActive = false;
     latestResearchOutput = event.output || "";
     addEntry(
-      "Research handoff",
+      "Writer",
       event.output || "The research shift completed. The handoff is ready in the run logs.",
     );
     document.body.classList.remove("working");
@@ -545,6 +720,21 @@ async function dispatchResearch(prompt) {
 }
 
 function buildPrompt(raw) {
+  const addressed = [];
+  for (const match of raw.matchAll(
+    /@(Everyone|Finder|Theorist|Experimentalist|Critic|Writer|Explainer)\b/gi,
+  )) {
+    const name = match[1][0].toUpperCase() + match[1].slice(1).toLowerCase();
+    if (!addressed.includes(name)) addressed.push(name);
+  }
+  const namedExperts = addressed.filter((name) => name !== "Everyone");
+  if (addressed.includes("Everyone")) {
+    return `The human PI addressed the whole lab. Let the Director recruit the useful experts and let each speak in their own voice.\n\n${raw}`;
+  }
+  if (namedExperts.length) {
+    const names = namedExperts.join(", ");
+    return `The human PI addressed ${names} directly. Let those experts answer first in their own voices. Invite anyone else only when it strengthens the work.\n\n${raw}`;
+  }
   if (mode === "research") {
     return `Take over this research program and return the strongest evidence-backed handoff:\n\n${raw}`;
   }

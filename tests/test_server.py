@@ -27,6 +27,8 @@ def test_demo_surface_is_served() -> None:
     assert response.status_code == 200
     assert "What should the lab pursue?" in response.text
     assert "Your research team" in response.text
+    assert "Cloud Research Lab" in response.text
+    assert 'data-mention="Finder"' in response.text
     assert "/static/cloud-research-icon.png" in response.text
 
 

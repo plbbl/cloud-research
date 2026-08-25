@@ -65,3 +65,15 @@ covered by the private-service smoke test above.
 - Ruff passed.
 - Structured event tests cover agent-to-expression mapping, safe UUID filters, Cloud Logging order,
   Cloud Run Job overrides, and the run-status API.
+
+## Group-lab interaction
+
+- Desktop 1440 x 900 shows the research discussion, six-member panel, live Director sphere, and
+  bottom composer without overlap.
+- Narrow 500 x 844 keeps the complete lobby and composer inside the viewport; the member panel
+  becomes a drawer below the desktop breakpoint.
+- Typing `@` opens all seven routing choices; typing `@Cri` filters to Critic and inserts
+  `@Critic`.
+- Arrow Down and Enter select Finder without a mouse.
+- A submitted `@Critic` message renders as a human-PI chat bubble and preserves the visible service
+  error when local credentials are intentionally absent.
