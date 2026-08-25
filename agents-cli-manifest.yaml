@@ -1,0 +1,7 @@
+name: cloud-research
+description: A persistent panel of Gemini research experts for every human PI.
+entrypoint: app.agent:app
+framework: google-adk
+model: gemini-3.7-flash
+deployment: cloud-run
+
