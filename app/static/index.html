@@ -50,12 +50,30 @@
         <section class="team" aria-labelledby="team-title">
           <h2 id="team-title">Your research team</h2>
           <ul>
-            <li data-agent="finder"><span>F</span>Finder</li>
-            <li data-agent="theorist"><span>T</span>Theorist</li>
-            <li data-agent="experimentalist"><span>E</span>Experimentalist</li>
-            <li data-agent="critic"><span>C</span>Critic</li>
-            <li data-agent="writer"><span>W</span>Writer</li>
-            <li data-agent="explainer"><span>X</span>Explainer</li>
+            <li data-agent="finder">
+              <span class="agent-mark">F</span>
+              <span class="agent-copy"><strong>Finder</strong><small>Ready</small></span>
+            </li>
+            <li data-agent="theorist">
+              <span class="agent-mark">T</span>
+              <span class="agent-copy"><strong>Theorist</strong><small>Ready</small></span>
+            </li>
+            <li data-agent="experimentalist">
+              <span class="agent-mark">E</span>
+              <span class="agent-copy"><strong>Experimentalist</strong><small>Ready</small></span>
+            </li>
+            <li data-agent="critic">
+              <span class="agent-mark">C</span>
+              <span class="agent-copy"><strong>Critic</strong><small>Ready</small></span>
+            </li>
+            <li data-agent="writer">
+              <span class="agent-mark">W</span>
+              <span class="agent-copy"><strong>Writer</strong><small>Ready</small></span>
+            </li>
+            <li data-agent="explainer">
+              <span class="agent-mark">X</span>
+              <span class="agent-copy"><strong>Explainer</strong><small>Ready</small></span>
+            </li>
           </ul>
         </section>
 
@@ -81,7 +99,41 @@
 
         <section class="start-screen" id="start-screen" aria-labelledby="start-title">
           <div class="greeting">
-            <span class="hero-icon"><img src="/static/cloud-research-icon.png" alt="" /></span>
+            <div class="lab-slot hero-lab-slot" id="hero-lab-slot">
+              <div class="lab-presence" id="lab-presence" data-state="idle">
+                <div class="lab-bot" aria-hidden="true">
+                  <svg viewBox="0 0 220 188" role="presentation">
+                    <defs>
+                      <radialGradient id="sphere-paint" cx="31%" cy="23%" r="78%">
+                        <stop offset="0" stop-color="#ffffff" />
+                        <stop offset="0.46" stop-color="#f4f4f1" />
+                        <stop offset="0.82" stop-color="#d9dad6" />
+                        <stop offset="1" stop-color="#bfc1bd" />
+                      </radialGradient>
+                    </defs>
+                    <ellipse class="bot-shadow" cx="110" cy="166" rx="42" ry="7" />
+                    <g class="bot-float">
+                      <g class="bot-sphere">
+                        <circle class="sphere-body" cx="110" cy="88" r="63" />
+                        <path class="sphere-glint" d="M72 55 C83 42 98 36 115 36" />
+                        <g class="bot-eyes">
+                          <g class="eye-left">
+                            <rect class="bot-eye" x="87" y="72" width="14" height="30" rx="7" />
+                          </g>
+                          <g class="eye-right">
+                            <rect class="bot-eye" x="121" y="72" width="14" height="30" rx="7" />
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+                <div class="lab-copy" role="status" aria-live="polite">
+                  <strong id="lab-agent">Lab ready</strong>
+                  <span id="lab-action">Six experts are standing by</span>
+                </div>
+              </div>
+            </div>
             <h1 id="start-title">What should the lab pursue?</h1>
             <p>One brief gives you a persistent team of six AI researchers.</p>
           </div>
@@ -96,6 +148,12 @@
                 required
                 placeholder="Describe the field, question, compute, and what a useful handoff should contain"
               ></textarea>
+              <div class="explain-targets" id="explain-targets" hidden role="group" aria-label="What to explain">
+                <button class="active" data-explain-target="paper" type="button" aria-pressed="true">Paper</button>
+                <button data-explain-target="task" type="button" aria-pressed="false">Task</button>
+                <button data-explain-target="research" type="button" aria-pressed="false">Our research</button>
+                <button data-explain-target="result" type="button" aria-pressed="false">Result</button>
+              </div>
               <div class="composer-bar">
                 <div class="mode-switch" role="group" aria-label="Choose a mode">
                   <button class="mode active" data-mode="research" type="button">Research</button>
@@ -132,8 +190,11 @@
 
         <section class="conversation" id="conversation" hidden aria-live="polite">
           <header class="conversation-header">
-            <p id="conversation-mode">Research shift</p>
-            <h1 id="conversation-title">Untitled research</h1>
+            <div class="conversation-heading">
+              <p id="conversation-mode">Research shift</p>
+              <h1 id="conversation-title">Untitled research</h1>
+            </div>
+            <div class="lab-slot conversation-lab-slot" id="conversation-lab-slot"></div>
           </header>
           <div class="transcript" id="transcript"></div>
         </section>

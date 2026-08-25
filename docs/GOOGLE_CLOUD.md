@@ -18,6 +18,7 @@ gcloud services enable \
   run.googleapis.com \
   cloudbuild.googleapis.com \
   artifactregistry.googleapis.com \
+  logging.googleapis.com \
   --project=x-cycling-506610-p8
 ```
 
@@ -31,6 +32,11 @@ gcloud iam service-accounts create cloud-research-run \
 gcloud projects add-iam-policy-binding x-cycling-506610-p8 \
   --member="serviceAccount:cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com" \
   --role="roles/aiplatform.user"
+
+# The private service reads only this project's structured research-shift events.
+gcloud projects add-iam-policy-binding x-cycling-506610-p8 \
+  --member="serviceAccount:cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com" \
+  --role="roles/logging.viewer"
 ```
 
 ## Cost-conscious deployment
@@ -89,9 +95,10 @@ gcloud run services update cloud-research \
   --update-env-vars=CLOUD_RESEARCH_JOB=cloud-research-shift,CLOUD_RESEARCH_JOB_LOCATION=us-central1
 ```
 
-The service calls the Cloud Run Jobs API once and returns Google's operation name. It does not
-poll, invent workflow states, or keep a custom queue. The Job invokes one ADK Director and exits
-when the Director says the honest research is finished.
+The service calls the Cloud Run Jobs API once and returns Google's operation name plus a UUID. The
+Job invokes one ADK Director and prints structured events for real ADK authors and agent calls.
+The private service reads those events from Cloud Logging so the interface can show who is working.
+It does not invent a scientific workflow, keep a custom queue, or use a research state machine.
 
 Do **not** click **Activate**, **Upgrade**, or convert the free trial to a paid account. Before any
 deployment, verify that the Cloud Console billing banner still says **Free trial** and shows the

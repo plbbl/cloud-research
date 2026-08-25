@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from google.adk.cli.fast_api import get_fast_api_app
 
 from .cloud_run import background_research_available, launch_research_job
+from .run_events import list_research_events
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 STATIC_DIR = PROJECT_ROOT / "app" / "static"
@@ -63,3 +64,15 @@ async def dispatch(request: Request) -> dict[str, str]:
     if not background_research_available():
         raise HTTPException(status_code=503, detail="Background research is not configured.")
     return launch_research_job(brief)
+
+
+@app.get("/api/runs/{run_id}")
+async def research_run(run_id: str) -> dict[str, object]:
+    try:
+        events = list_research_events(run_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="The research run id is invalid.") from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    done = bool(events and events[-1]["state"] in {"complete", "error"})
+    return {"run_id": run_id, "events": events, "done": done}
