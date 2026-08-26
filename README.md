@@ -111,6 +111,7 @@ link reachability; they do not claim that generated research is scientifically v
 
 The public contest-proof build story is published as
 [`v0.1.0`](https://github.com/plbbl/cloud-research/releases/tag/v0.1.0).
+The concise [`judging map`](docs/JUDGING_MAP.md) links each rubric category to inspectable proof.
 
 ## Run locally without calling Gemini
 
