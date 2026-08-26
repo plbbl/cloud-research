@@ -175,7 +175,7 @@ def test_github_issue_launches_the_selected_lab(monkeypatch) -> None:
         calls.update(brief=brief, lab=lab, source=source)
         return {"run_id": "run-1", "lab_id": lab.id, "operation": "op", "message": "ok"}
 
-    monkeypatch.setattr("app.fast_api_app.launch_research_job", fake_launch)
+    monkeypatch.setattr("app.github_events.launch_research_job", fake_launch)
     payload = {
         "action": "labeled",
         "label": {"name": "cloud-research"},

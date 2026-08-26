@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 
@@ -14,11 +13,11 @@ from pydantic import BaseModel, Field
 
 from .cloud_run import background_research_available, launch_research_job
 from .firestore_labs import build_lab_store
-from .github_events import research_brief, valid_signature
+from .github_events import GitHubEventError, dispatch_research_event
 from .lab_runtime import LabRunnerRegistry, stream_lab_events
 from .labs import LabDraft, LabSpec
 from .live_voice import LIVE_MODEL_NAME, bridge_live_voice
-from .research_ledger import claim_github_delivery, ledger
+from .research_ledger import ledger
 from .run_events import list_research_events
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -157,34 +156,11 @@ async def dispatch(request: DispatchRequest) -> dict[str, str]:
 
 @app.post("/api/github/events")
 async def github_event(request: Request) -> dict[str, object]:
-    if not background_research_available():
-        raise HTTPException(status_code=503, detail="Background research is not configured.")
-    secret = os.getenv("GITHUB_WEBHOOK_SECRET", "").strip()
     body = await request.body()
-    if not valid_signature(body, request.headers.get("X-Hub-Signature-256", ""), secret):
-        raise HTTPException(status_code=401, detail="The GitHub signature is invalid.")
-
-    event_name = request.headers.get("X-GitHub-Event", "")
-    if event_name == "ping":
-        return {"accepted": True, "message": "Cloud Research is listening."}
-    delivery_id = request.headers.get("X-GitHub-Delivery", "").strip()
-    if not delivery_id:
-        raise HTTPException(status_code=400, detail="The GitHub delivery id is missing.")
     try:
-        payload = json.loads(body)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(status_code=400, detail="The GitHub payload is invalid.") from exc
-    trigger = research_brief(event_name, payload)
-    if trigger is None:
-        return {"accepted": False, "message": "This event does not request research."}
-
-    lab = lab_store.get(trigger.lab_id) if trigger.lab_id else lab_store.list()[0]
-    if lab is None:
-        raise HTTPException(status_code=404, detail="The requested lab does not exist.")
-    if not claim_github_delivery(delivery_id):
-        return {"accepted": True, "duplicate": True, "delivery_id": delivery_id}
-    result = launch_research_job(trigger.brief, lab, source=trigger.source)
-    return {"accepted": True, "delivery_id": delivery_id, **result}
+        return dispatch_research_event(body, request.headers, lab_store)
+    except GitHubEventError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail) from exc
 
 
 @app.get("/api/runs/{run_id}")

@@ -35,24 +35,26 @@ the useful specialists in whatever order the evidence demands. The default Lab i
 - Explainer reconstructs what happened so the human truly understands and can challenge it.
 
 The background shift runs as a Cloud Run Job, so closing the browser does not stop the research.
-The current Lab definition and run ID travel with the Job. When the human returns, the interface
-reconnects to its structured Cloud Logging events and presents an evidence-backed handoff, not a
+The current Lab definition and run ID travel with the Job. A signed GitHub Issue label can start
+the same shift without an open browser. Firestore preserves append-only run facts across
+scale-to-zero, and Writer publishes the final research packet to a dedicated GitHub branch. When
+the human returns, the interface reconstructs the same run and offers a live voice debrief—not a
 fabricated progress animation or another chat transcript.
 
 ## How we built it
 
-Cloud Research uses Gemini 3.7 Flash through Vertex AI, Google ADK 2.7.1, and Cloud Run. One ADK
+Cloud Research uses Gemini 3.7 Flash through Vertex AI, Google ADK 2.7.1, Cloud Run, and Firestore. One ADK
 Director sees every custom specialist as an ADK `AgentTool` and decides dynamically whom to call
 and when. Every expert can use Google Search grounding. Roles that describe experiments receive
 Gemini built-in code execution; writing roles receive artifact and GitHub publishing tools; theory
 roles receive a cheap claim-comparison tool. Explainer is available both inside a research shift
 and as a standalone paper, task, research, or result explanation mode.
 
-The HTTPS service and long-running Job share one container. The service accepts the research
-contract and launches one Job execution with the selected Lab specification. The Job owns no
-scientific state machine: it gives the brief to the Director, streams real Agent events to Cloud
-Logging, publishes the handoff, and exits. Cloud Run handles lifetime, retry policy, and
-scale-to-zero. The browser only remembers the run ID needed to rejoin.
+The private HTTPS service and long-running Job share one container. A separate, public, minimal
+event gateway exposes only a health check and HMAC-verified GitHub webhook. The gateway deduplicates
+deliveries and launches a Job with the selected Lab specification. The Job owns no scientific state
+machine: it gives the brief to the Director, appends real Agent facts to Firestore, publishes the
+handoff, and exits. Cloud Run handles lifetime, retry policy, and scale-to-zero.
 
 The research taste came from our existing local research system, but we deliberately did not copy
 its process machinery, databases, secrets, queues, watchdogs, or GPU launchers. We ported only the
@@ -72,16 +74,24 @@ work. We also separated cheap cloud probes from expensive local GPU experiments:
 can falsify and narrow; the existing local lab can continue a GitHub branch when heavy compute is
 actually justified.
 
+The other hard problem was evidence honesty. In a three-case live evaluation, 23 of 24 unique
+source URLs resolved; one model-generated GitHub link did not. We preserved that failure and added
+a repeatable transport audit instead of editing the score. Reachability still does not prove claim
+support—the PI and Critic must inspect that relationship.
+
 ## Accomplishments that we're proud of
 
 - A genuine multi-agent panel whose order is model-selected, not a disguised workflow graph.
 - A background Cloud Run Job that survives the browser and scales to zero afterward.
-- A resumable interface that restores the exact run from Cloud Logging after the PI returns.
+- A real GitHub Issue label → signed Cloud Run event → custom Gemini panel → GitHub branch path.
+- A resumable interface backed by an append-only Firestore fact ledger.
 - An Explainer that makes research legible without turning it into marketing copy.
 - Gemini-native grounded search and isolated code probes with no arbitrary local code execution.
-- One container and a small deterministic core, with no imported runtime or secrets from the
-  existing system.
-- A complete offline verification suite: agent wiring, prompts, tools, server, UI, and container.
+- Three completed cross-domain Jobs with reproducible outcome and source-transport audits.
+- A second Google model, Gemini Live native audio, proven end-to-end with grounded Handoff context,
+  audio frames, transcription, interruption-ready streaming, and a separate Vertex region.
+- One private model surface, one tiny public webhook surface, Secret Manager, HMAC verification,
+  delivery deduplication, least-privilege IAM, and zero minimum instances.
 
 ## What we learned
 
@@ -97,6 +107,6 @@ boring report.
 
 Next we will make the human–lab relationship richer without turning it into approval theater: a
 living research portfolio across multiple shifts, direct pickup by local GPU experiment agents,
-paper-to-experiment lineage, and Morning Handoffs that teach the researcher how every important
-claim changed. The north star remains simple: research should keep moving, and the human should
-understand where it moved and why.
+paper-to-experiment lineage, claim-level source-support audits, and Handoffs that teach the
+researcher how every important claim changed. The north star remains simple: research should keep
+moving, and the human should understand where it moved and why.

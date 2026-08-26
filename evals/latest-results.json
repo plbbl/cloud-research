@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-08-26T05:43:35Z",
+  "base_url": "http://127.0.0.1:8092",
+  "summary": {
+    "cases": 3,
+    "completed": 3,
+    "observable_passes": 3
+  },
+  "results": [
+    {
+      "id": "vlm-mixed-shift",
+      "run_id": "2fd4e974-461a-420a-9e1b-3dd96d4ed7e0",
+      "completed": true,
+      "duration_seconds": 429.9,
+      "event_count": 7,
+      "handoff_characters": 11303,
+      "source_url_count": 9,
+      "section_checks": {
+        "killed_paths": true,
+        "unknowns": true,
+        "next_task": true,
+        "artifact": true
+      },
+      "observable_pass": true,
+      "source_urls": [
+        "https://arxiv.org/abs/2209.07511",
+        "https://arxiv.org/abs/2210.04831",
+        "https://arxiv.org/abs/2302.12400",
+        "https://arxiv.org/abs/2403.17834",
+        "https://arxiv.org/abs/2403.18485",
+        "https://arxiv.org/abs/2409.19318",
+        "https://github.com/AdilKarmanov/TDA",
+        "https://github.com/azshue/TPT",
+        "https://openreview.net/forum?id=9wU2u0N3wG"
+      ]
+    },
+    {
+      "id": "kv-cache-failure",
+      "run_id": "6065f296-5073-4c93-8741-4cbb82f9435d",
+      "completed": true,
+      "duration_seconds": 375.4,
+      "event_count": 8,
+      "handoff_characters": 5774,
+      "source_url_count": 6,
+      "section_checks": {
+        "killed_paths": true,
+        "unknowns": true,
+        "next_task": true,
+        "artifact": true
+      },
+      "observable_pass": true,
+      "source_urls": [
+        "https://arxiv.org/abs/2306.14048",
+        "https://arxiv.org/abs/2309.17453",
+        "https://arxiv.org/abs/2404.06654",
+        "https://arxiv.org/abs/2404.14469",
+        "https://arxiv.org/abs/2406.02069",
+        "https://arxiv.org/abs/2410.10819"
+      ]
+    },
+    {
+      "id": "synthetic-contamination",
+      "run_id": "ee341afe-4395-4d76-9ba7-b8f238e442ed",
+      "completed": true,
+      "duration_seconds": 347.6,
+      "event_count": 7,
+      "handoff_characters": 5326,
+      "source_url_count": 9,
+      "section_checks": {
+        "killed_paths": true,
+        "unknowns": true,
+        "next_task": true,
+        "artifact": true
+      },
+      "observable_pass": true,
+      "source_urls": [
+        "https://arxiv.org/abs/2310.16789",
+        "https://arxiv.org/abs/2402.19255",
+        "https://arxiv.org/abs/2404.09907",
+        "https://arxiv.org/abs/2410.05229",
+        "https://arxiv.org/abs/2510.07002",
+        "https://github.com/plbbl/cloud-research/blob/cloud-research/detecting-template-memorization-via-drift-orthogonalized-transition-subspaces/research/template-memorization-fetv-handoff.md",
+        "https://huggingface.co/datasets/AI-MO/NuminaMath-CoT",
+        "https://huggingface.co/datasets/apple/GSM-Symbolic",
+        "https://huggingface.co/datasets/qintongli/GSM-Plus"
+      ]
+    }
+  ]
+}

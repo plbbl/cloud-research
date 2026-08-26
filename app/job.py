@@ -48,7 +48,7 @@ async def run() -> str:
         lab=lab.model_dump(mode="json"),
         source=os.getenv("RESEARCH_SOURCE", "cloud-run-job"),
     )
-    events = ResearchEventEmitter(run_id)
+    events = ResearchEventEmitter(run_id, lab=lab)
     events.presence("director")
     session_id = str(uuid.uuid4())
     user_id = "human-pi"
@@ -77,7 +77,7 @@ async def run() -> str:
                 if function_call and function_call.name:
                     events.presence(function_call.name)
             if text and not event.is_final_response():
-                author, state, default_detail = agent_presence(event.author)
+                author, state, default_detail = agent_presence(event.author, lab)
                 events.emit(author, state, default_detail)
             if event.is_final_response() and text:
                 final_text = text

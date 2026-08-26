@@ -10,7 +10,9 @@ from typing import Any
 
 import google.auth
 from google.auth.transport.requests import AuthorizedSession
+from requests import HTTPError
 
+from .labs import LabSpec
 from .research_ledger import ledger
 
 AGENT_STATES = {
@@ -29,13 +31,32 @@ AGENT_STATES = {
 }
 
 
-def agent_presence(name: str) -> tuple[str, str, str]:
+def agent_presence(name: str, lab: LabSpec | None = None) -> tuple[str, str, str]:
     """Return the presentation identity for one real ADK author or tool name."""
     normalized = name.strip().lower().replace("-", "_")
-    return AGENT_STATES.get(
-        normalized,
-        ("director", "directing", "Director is coordinating the next move"),
-    )
+    if normalized in AGENT_STATES:
+        return AGENT_STATES[normalized]
+    if lab:
+        spec = next((agent for agent in lab.agents if agent.id == normalized), None)
+        if spec:
+            copy = f"{spec.id} {spec.name} {spec.role}".lower()
+            state, action = _presence_from_role(copy)
+            return spec.id, state, f"{spec.name} is {action}"
+    return "director", "directing", "Director is coordinating the next move"
+
+
+def _presence_from_role(copy: str) -> tuple[str, str]:
+    if any(word in copy for word in ("search", "paper", "prior", "find", "scout")):
+        return "searching", "mapping live evidence"
+    if any(word in copy for word in ("experiment", "test", "code", "run", "probe")):
+        return "testing", "running a decisive probe"
+    if any(word in copy for word in ("critic", "challenge", "attack", "fals", "skeptic")):
+        return "critiquing", "attacking the strongest claim"
+    if any(word in copy for word in ("write", "report", "publish", "handoff")):
+        return "writing", "assembling the research handoff"
+    if any(word in copy for word in ("explain", "teach", "clar")):
+        return "explaining", "making the mechanism clear"
+    return "theorizing", "sharpening the mechanism"
 
 
 @dataclass
@@ -43,6 +64,7 @@ class ResearchEventEmitter:
     """Print JSON events that Cloud Run captures as structured log entries."""
 
     run_id: str
+    lab: LabSpec | None = None
     sequence: int = field(default=0, init=False)
 
     def emit(
@@ -82,7 +104,7 @@ class ResearchEventEmitter:
         return payload
 
     def presence(self, name: str, detail: str = "") -> dict[str, Any]:
-        agent, state, default_detail = agent_presence(name)
+        agent, state, default_detail = agent_presence(name, self.lab)
         return self.emit(agent, state, detail or default_detail)
 
 
@@ -127,7 +149,10 @@ def list_research_events(run_id: str) -> list[dict[str, Any]]:
         },
         timeout=15,
     )
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except HTTPError as exc:
+        raise RuntimeError("Research activity is not readable yet.") from exc
 
     events = []
     for entry in response.json().get("entries", []):

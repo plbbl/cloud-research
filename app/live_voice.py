@@ -35,15 +35,21 @@ def live_client() -> genai.Client:
     """Use the bound Vertex key locally and workload identity on Cloud Run."""
 
     api_key = os.getenv("GOOGLE_API_KEY")
-    project = os.getenv("CLOUD_RESEARCH_VERTEX_PROJECT")
-    if _vertex_enabled() and api_key and project:
-        return genai.Client(
-            vertexai=True,
-            api_key=api_key,
-            project=project,
-            location=os.getenv("CLOUD_RESEARCH_VERTEX_LOCATION", "us-central1"),
+    if _vertex_enabled():
+        project = os.getenv("CLOUD_RESEARCH_VERTEX_PROJECT") or os.getenv(
+            "GOOGLE_CLOUD_PROJECT"
         )
-    return genai.Client()
+        if not project:
+            raise RuntimeError("Vertex Live needs CLOUD_RESEARCH_VERTEX_PROJECT.")
+        options: dict[str, object] = {
+            "vertexai": True,
+            "project": project,
+            "location": os.getenv("CLOUD_RESEARCH_VERTEX_LOCATION", "us-central1"),
+        }
+        if api_key:
+            options["api_key"] = api_key
+        return genai.Client(**options)
+    return genai.Client(api_key=api_key) if api_key else genai.Client()
 
 
 def live_instruction(lab: LabSpec, handoff: str = "") -> str:

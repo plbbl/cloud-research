@@ -1,0 +1,32 @@
+[
+  {
+    "id": "vlm-mixed-shift",
+    "lab_id": "lab_24gb_research_lab",
+    "brief": "Parameter-efficient test-time adaptation for CLIP-like vision-language models under mixed domain and label shift. One 24 GB GPU, six hours. Find a mechanism-level task, kill one candidate, run a cheap probe, and return the next reproducible GPU experiment with current source URLs."
+  },
+  {
+    "id": "kv-cache-failure",
+    "lab_id": "lab_24gb_research_lab",
+    "brief": "Long-context KV-cache compression for a 7B open model on one 24 GB GPU. Find a failure mode not reducible to average perplexity, compare the nearest public methods, falsify one tempting fix cheaply, and return a decisive experiment with source URLs."
+  },
+  {
+    "id": "synthetic-contamination",
+    "lab_id": "lab_24gb_research_lab",
+    "brief": "Detect when synthetic instruction data silently copies benchmark reasoning patterns. One 24 GB GPU, public data only. Find a tractable mechanism-level task, kill one weak proxy, run a small probe if possible, and return an evidence-backed next experiment with source URLs."
+  },
+  {
+    "id": "graph-ood-calibration",
+    "lab_id": "lab_24gb_research_lab",
+    "brief": "Graph neural network calibration under structural distribution shift. One 24 GB GPU and eight hours. Find an under-tested causal variable rather than a new dataset, challenge novelty against current work, run a cheap simulation, and return a reproducible handoff with source URLs."
+  },
+  {
+    "id": "small-model-unlearning",
+    "lab_id": "lab_24gb_research_lab",
+    "brief": "Machine unlearning for sub-3B open language models when deletion requests are semantically entangled. One 24 GB GPU. Find the sharpest tractable task, compare nearest papers and code, kill one candidate metric, and return the cheapest decisive experiment with source URLs."
+  },
+  {
+    "id": "diffusion-evaluation",
+    "lab_id": "lab_24gb_research_lab",
+    "brief": "Evaluation of fast diffusion samplers when visual quality metrics disagree with prompt-faithful rare details. One 24 GB GPU. Find a mechanism-level opening, falsify a tempting aggregate metric, and return a small reproducible test plus current source URLs."
+  }
+]

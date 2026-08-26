@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from app.labs import LabSpec
 from app.run_events import ResearchEventEmitter, agent_presence, list_research_events
 
 
@@ -12,6 +13,30 @@ def test_agent_presence_maps_real_adk_names() -> None:
         "Experimentalist is running a decisive probe",
     )
     assert agent_presence("cloud_research")[0] == "director"
+
+
+def test_agent_presence_maps_a_user_defined_role() -> None:
+    lab = LabSpec.model_validate(
+        {
+            "id": "custom_lab",
+            "name": "Custom Lab",
+            "mission": "Find the opening.",
+            "agents": [
+                {
+                    "id": "probe",
+                    "name": "Probe",
+                    "role": "Run the cheapest code experiment.",
+                    "color": "#111111",
+                }
+            ],
+        }
+    )
+
+    assert agent_presence("probe", lab) == (
+        "probe",
+        "testing",
+        "Probe is running a decisive probe",
+    )
 
 
 def test_emitter_prints_structured_json(capsys) -> None:

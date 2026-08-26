@@ -4,8 +4,15 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
+import os
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Protocol
+
+from .cloud_run import background_research_available, launch_research_job
+from .labs import LabSpec
+from .research_ledger import claim_github_delivery
 
 
 @dataclass(frozen=True)
@@ -13,6 +20,19 @@ class GitHubResearchBrief:
     brief: str
     lab_id: str
     source: str
+
+
+class LabRepository(Protocol):
+    def list(self) -> list[LabSpec]: ...
+
+    def get(self, lab_id: str) -> LabSpec | None: ...
+
+
+class GitHubEventError(Exception):
+    def __init__(self, status_code: int, detail: str) -> None:
+        self.status_code = status_code
+        self.detail = detail
+        super().__init__(detail)
 
 
 def valid_signature(body: bytes, signature: str, secret: str) -> bool:
@@ -60,3 +80,37 @@ def research_brief(
             source="github:repository_dispatch",
         )
     return None
+
+
+def dispatch_research_event(
+    body: bytes,
+    headers: Mapping[str, str],
+    lab_store: LabRepository,
+) -> dict[str, object]:
+    if not background_research_available():
+        raise GitHubEventError(503, "Background research is not configured.")
+    secret = os.getenv("GITHUB_WEBHOOK_SECRET", "").strip()
+    if not valid_signature(body, headers.get("x-hub-signature-256", ""), secret):
+        raise GitHubEventError(401, "The GitHub signature is invalid.")
+
+    event_name = headers.get("x-github-event", "")
+    if event_name == "ping":
+        return {"accepted": True, "message": "Cloud Research is listening."}
+    delivery_id = headers.get("x-github-delivery", "").strip()
+    if not delivery_id:
+        raise GitHubEventError(400, "The GitHub delivery id is missing.")
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError as exc:
+        raise GitHubEventError(400, "The GitHub payload is invalid.") from exc
+    trigger = research_brief(event_name, payload)
+    if trigger is None:
+        return {"accepted": False, "message": "This event does not request research."}
+
+    lab = lab_store.get(trigger.lab_id) if trigger.lab_id else lab_store.list()[0]
+    if lab is None:
+        raise GitHubEventError(404, "The requested lab does not exist.")
+    if not claim_github_delivery(delivery_id):
+        return {"accepted": True, "duplicate": True, "delivery_id": delivery_id}
+    result = launch_research_job(trigger.brief, lab, source=trigger.source)
+    return {"accepted": True, "delivery_id": delivery_id, **result}

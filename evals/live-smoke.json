@@ -1,0 +1,13 @@
+{
+  "model": "gemini-live-2.5-flash-native-audio",
+  "binary_frames": 42,
+  "binary_bytes": 452714,
+  "event_types": [
+    "generation_complete",
+    "output_transcript",
+    "turn_complete"
+  ],
+  "transcript": "The lab observed a result on a synthetic probe, but the claim that same mechanism will improve CLIP on a real benchmark is still just a proposal.",
+  "generated_at": "2026-08-26T06:08:23Z",
+  "scope": "Private Cloud Run proxy to Vertex Gemini Live; text input, audio output."
+}

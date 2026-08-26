@@ -24,6 +24,29 @@ def test_vertex_live_key_includes_project_and_region(monkeypatch) -> None:
     }
 
 
+def test_vertex_live_workload_identity_uses_live_region(monkeypatch) -> None:
+    captured = {}
+
+    def fake_client(**kwargs):
+        captured.update(kwargs)
+        return object()
+
+    monkeypatch.setenv("GOOGLE_GENAI_USE_VERTEXAI", "TRUE")
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+    monkeypatch.delenv("CLOUD_RESEARCH_VERTEX_PROJECT", raising=False)
+    monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "cloud-project")
+    monkeypatch.setenv("CLOUD_RESEARCH_VERTEX_LOCATION", "us-central1")
+    monkeypatch.setattr(live_voice.genai, "Client", fake_client)
+
+    live_voice.live_client()
+
+    assert captured == {
+        "vertexai": True,
+        "project": "cloud-project",
+        "location": "us-central1",
+    }
+
+
 def test_live_debrief_is_grounded_in_the_current_handoff() -> None:
     instruction = live_voice.live_instruction(
         live_voice.LabSpec.model_validate(

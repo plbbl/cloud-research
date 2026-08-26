@@ -1,0 +1,176 @@
+{
+  "generated_at": "2026-08-26T05:50:05Z",
+  "scope": "Transport audit only: a successful response does not prove that a source supports a research claim.",
+  "summary": {
+    "unique_urls": 24,
+    "reachable": 23,
+    "unreachable": 1,
+    "cases_with_all_urls_reachable": 2
+  },
+  "cases": [
+    {
+      "id": "vlm-mixed-shift",
+      "urls": 9,
+      "reachable": 8,
+      "transport_pass": false
+    },
+    {
+      "id": "kv-cache-failure",
+      "urls": 6,
+      "reachable": 6,
+      "transport_pass": true
+    },
+    {
+      "id": "synthetic-contamination",
+      "urls": 9,
+      "reachable": 9,
+      "transport_pass": true
+    }
+  ],
+  "checks": [
+    {
+      "url": "https://arxiv.org/abs/2209.07511",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2209.07511"
+    },
+    {
+      "url": "https://arxiv.org/abs/2210.04831",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2210.04831"
+    },
+    {
+      "url": "https://arxiv.org/abs/2302.12400",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2302.12400"
+    },
+    {
+      "url": "https://arxiv.org/abs/2306.14048",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2306.14048"
+    },
+    {
+      "url": "https://arxiv.org/abs/2309.17453",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2309.17453"
+    },
+    {
+      "url": "https://arxiv.org/abs/2310.16789",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2310.16789"
+    },
+    {
+      "url": "https://arxiv.org/abs/2402.19255",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2402.19255"
+    },
+    {
+      "url": "https://arxiv.org/abs/2403.17834",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2403.17834"
+    },
+    {
+      "url": "https://arxiv.org/abs/2403.18485",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2403.18485"
+    },
+    {
+      "url": "https://arxiv.org/abs/2404.06654",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2404.06654"
+    },
+    {
+      "url": "https://arxiv.org/abs/2404.09907",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2404.09907"
+    },
+    {
+      "url": "https://arxiv.org/abs/2404.14469",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2404.14469"
+    },
+    {
+      "url": "https://arxiv.org/abs/2406.02069",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2406.02069"
+    },
+    {
+      "url": "https://arxiv.org/abs/2409.19318",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2409.19318"
+    },
+    {
+      "url": "https://arxiv.org/abs/2410.05229",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2410.05229"
+    },
+    {
+      "url": "https://arxiv.org/abs/2410.10819",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2410.10819"
+    },
+    {
+      "url": "https://arxiv.org/abs/2510.07002",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://arxiv.org/abs/2510.07002"
+    },
+    {
+      "url": "https://github.com/AdilKarmanov/TDA",
+      "ok": false,
+      "status": 404,
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "url": "https://github.com/azshue/TPT",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://github.com/azshue/TPT"
+    },
+    {
+      "url": "https://github.com/plbbl/cloud-research/blob/cloud-research/detecting-template-memorization-via-drift-orthogonalized-transition-subspaces/research/template-memorization-fetv-handoff.md",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://github.com/plbbl/cloud-research/blob/cloud-research/detecting-template-memorization-via-drift-orthogonalized-transition-subspaces/research/template-memorization-fetv-handoff.md"
+    },
+    {
+      "url": "https://huggingface.co/datasets/AI-MO/NuminaMath-CoT",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://huggingface.co/datasets/AI-MO/NuminaMath-CoT"
+    },
+    {
+      "url": "https://huggingface.co/datasets/apple/GSM-Symbolic",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://huggingface.co/datasets/apple/GSM-Symbolic"
+    },
+    {
+      "url": "https://huggingface.co/datasets/qintongli/GSM-Plus",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://huggingface.co/datasets/qintongli/GSM-Plus"
+    },
+    {
+      "url": "https://openreview.net/forum?id=9wU2u0N3wG",
+      "ok": true,
+      "status": 200,
+      "resolved_url": "https://openreview.net/challenge?redirect=%2Fforum%3Fid%3D9wU2u0N3wG"
+    }
+  ]
+}

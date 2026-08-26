@@ -73,7 +73,7 @@ The workspace shows the lab as it actually works:
   thinking, speaking, interruption, and idle each have a distinct fluid expression;
 - the expert roster identifies the active researcher and its current action;
 - Cloud Run Job events are emitted as structured logs and read back into the private workspace;
-- a signed GitHub Issue label or repository dispatch can launch that same Job without an open tab;
+- a signed GitHub Issue label can launch that same Job without an open tab;
 - Firestore preserves custom Labs, run events, and the final Handoff across scale-to-zero cold starts;
 - the selected custom Lab is rebuilt inside that Job, and its run ID is restored after a refresh or
   browser departure;
@@ -89,6 +89,25 @@ Add the label `cloud-research` to a GitHub Issue containing the domain, compute 
 and desired handoff. A signed webhook at `/api/github/events` verifies the delivery, rejects retries,
 selects the Lab from an optional `lab:<lab_id>` label, and launches the Cloud Run Job. GitHub is an
 entry point, not a workflow engine: after launch, the ADK Director still chooses every research move.
+
+The public gateway is intentionally not the product API. `/api/labs`, `/api/dispatch`, model calls,
+and Live Audio remain private. Its separate service identity can start only the one research Job,
+write Firestore delivery facts, and read only the webhook secret.
+
+## Measured proof
+
+- [GitHub Issue #1](https://github.com/plbbl/cloud-research/issues/1) produced an external HTTP 200
+  delivery, Cloud Run execution `cloud-research-shift-6mnfr`, eight custom-expert events, and a
+  public research branch—without an open browser.
+- Three repeatable cross-domain Jobs completed in 347.6–429.9 seconds with 7–8 real expert events
+  each. All three preserved killed paths, unknowns, a next task, an artifact, and source URLs.
+- A separate transport audit reached 23 of 24 unique source URLs. The retained 404 is a measured
+  evidence-integrity failure, not a result we edited away.
+
+See [`docs/EVALUATION.md`](docs/EVALUATION.md),
+[`evals/latest-results.json`](evals/latest-results.json), and
+[`evals/source-audit.json`](evals/source-audit.json). These checks measure observable completion and
+link reachability; they do not claim that generated research is scientifically validated.
 
 ## Run locally without calling Gemini
 
@@ -118,8 +137,8 @@ control.
 
 ## Verified live
 
-See [`docs/SMOKE_TESTS.md`](docs/SMOKE_TESTS.md) for the real private-service and Cloud Run Job
-tests, their outputs, and the two defects those tests exposed and fixed.
+See [`docs/SMOKE_TESTS.md`](docs/SMOKE_TESTS.md) for the real private-service, Live, Cloud Run Job,
+GitHub event, Firestore, container, and UI checks.
 
 ## Where the existing system went
 

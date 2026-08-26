@@ -8,30 +8,29 @@ On camera: the empty research brief.
 > because dozens of intermediate research actions still require attention. Cloud Research turns
 > one researcher into the PI of a persistent panel of Gemini experts.
 
-## 0:25–0:55 — One brief
+## 0:25–0:55 — The trigger is ordinary research work
 
-Create a small custom Lab, rename one expert, and give its experiment role a one-line mission. Paste
-a real narrow brief with a compute limit, for example small-model test-time adaptation on one 24 GB
-GPU. Click **Start research**. Point out the returned run ID, then close the tab.
+Open public GitHub Issue #1. Its body is a research contract: a narrow failure, one 24 GB GPU,
+constraints, and desired handoff. Add `cloud-research`. Do not open the product UI yet.
 
 ## 0:55–1:25 — Proof of Action (unedited)
 
-In Google Cloud Console, show:
+In one unedited segment, show:
 
-1. the `cloud-research-shift` Cloud Run Job execution;
-2. the container image and `gemini-3.7-flash` environment;
-3. live structured logs naming the custom Lab and the experts Gemini actually recruited.
+1. GitHub reports HTTP 200 for the signed delivery;
+2. `cloud-research-shift` appears as a new Cloud Run Job execution;
+3. Firestore receives the run and the first expert fact;
+4. live events name the custom Lab's Scout, Mechanist, Probe, and Skeptic.
 
 Keep this one continuous, unedited recording segment.
 
 ## 1:25–2:35 — The interesting work
 
-Reopen the product and show that it reconnects to the same run ID without re-submitting the brief.
-Then show three decisive moments, not every message:
+Open the product and rejoin the same run ID. Show three decisive moments, not every message:
 
 - Finder surfaces a mechanism-level crack and nearest work with citations.
 - Critic kills or repairs the first candidate instead of approving it.
-- Experimentalist runs a cheap code probe and the result changes the claim.
+- Probe runs a cheap synthetic check and the result changes the next experiment.
 
 Say explicitly: there is no fixed pipeline and the interface does not invent progress. The Director
 chooses each expert because of the evidence it currently has; Cloud Run only owns execution
@@ -39,7 +38,7 @@ lifetime.
 
 ## 2:35–3:15 — The handoff
 
-Show the Handoff in the product and, when GitHub is configured, open its generated branch:
+Show the Handoff in the product and open its generated `cloud-research/*` GitHub branch:
 
 - the surviving claim;
 - evidence and citations;
@@ -47,10 +46,14 @@ Show the Handoff in the product and, when GitHub is configured, open its generat
 - the next local/GPU experiment;
 - the exact command or task the existing local system can pick up.
 
+Call the cheap probe a **toy or synthetic probe**, not a real CLIP benchmark. Then show the
+repeatable evaluation: three Jobs completed; 23/24 unique links resolved. Open the retained 404 and
+say, “we expose evidence failure instead of hiding it.”
+
 ## 3:15–3:40 — Explainer
 
-Switch the app to **Explain**. Paste the handoff or one cited paper. Show the response organized as
-old default → surprise → what was done → decisive evidence → uncertainty → next move.
+Start **Live Debrief** with the animated Lab Bot and ask: “What did the team kill, what did it
+observe here, and what is still only proposed?” Then interrupt once and ask about the failed source.
 
 ## 3:40–4:00 — Close
 

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "vlm-mixed-shift",
+    "run_id": "2fd4e974-461a-420a-9e1b-3dd96d4ed7e0",
+    "duration_seconds": 429.9
+  },
+  {
+    "id": "kv-cache-failure",
+    "run_id": "6065f296-5073-4c93-8741-4cbb82f9435d",
+    "duration_seconds": 375.4
+  },
+  {
+    "id": "synthetic-contamination",
+    "run_id": "ee341afe-4395-4d76-9ba7-b8f238e442ed",
+    "duration_seconds": 347.6
+  }
+]
