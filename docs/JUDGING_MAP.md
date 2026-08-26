@@ -30,7 +30,7 @@ custom experts, preserved killed directions and unknowns, and published a contin
 ## Demo & Production Readiness — 30%
 
 - Public MIT-licensed repository, third-party Apache-2.0 attribution, architecture diagram,
-  reproducible setup, and 42 tests.
+  reproducible setup, and 43 tests.
 - Real GitHub HTTP 200, Cloud Run execution, Firestore facts, custom-agent events, and GitHub packet.
 - Three repeatable multi-domain Jobs plus generated JSON evidence.
 - Real Gemini Live bridge with 42 native-audio frames and output transcription.

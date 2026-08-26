@@ -11,3 +11,11 @@ def test_prompt_philosophy_is_present_without_a_rulebook() -> None:
     assert "valuable research fruit exists" in complete_prompt
     assert "interesting" in complete_prompt
     assert "believe" in complete_prompt
+
+
+def test_prompts_preserve_the_evidence_boundary() -> None:
+    complete_prompt = " ".join(PROMPTS.values()).lower()
+    assert "[observed here]" in complete_prompt
+    assert "[sourced]" in complete_prompt
+    assert "[proposed]" in complete_prompt
+    assert "toy probe never validates a real benchmark" in complete_prompt

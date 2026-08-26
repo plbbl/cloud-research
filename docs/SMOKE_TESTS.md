@@ -105,7 +105,7 @@ covered by the private-service smoke test above.
 
 ## Automated checks after event, Firestore, and Live work
 
-- 42 Python tests passed.
+- 43 Python tests passed.
 - JavaScript syntax check passed.
 - Ruff passed.
 - Structured event tests cover agent-to-expression mapping, safe UUID filters, Cloud Logging order,
