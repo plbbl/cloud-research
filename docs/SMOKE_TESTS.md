@@ -51,8 +51,8 @@ Observed:
 - The Issue comment explicitly marks the mechanism and thresholds as proposed pending the listed
   one-GPU falsification experiment.
 
-After the gateway moved to its separate least-privilege identity, a new external GitHub ping again
-returned HTTP 200 in 0.05 seconds.
+After the final image moved to the gateway's separate least-privilege identity, a new external
+GitHub ping again returned HTTP 200 in 0.06 seconds.
 
 ## Native Live debrief
 

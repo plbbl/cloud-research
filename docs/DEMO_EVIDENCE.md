@@ -16,12 +16,13 @@ must remain qualified.
 ## Owner-only proof to show in the video
 
 - GitHub webhook delivery `3839105655942152000`: Issues, HTTP 200, 0.67 seconds.
-- Post-isolation ping `3839109520712294400`: HTTP 200, 0.08 seconds.
+- Final-image ping `3839111268172570600`: HTTP 200, 0.06 seconds.
 - Cloud Run Job execution: `cloud-research-shift-6mnfr`.
 - Run ID: `363dea89-6ece-4eeb-9f6c-7d49cad4f703`.
 - Job result: completed in 8 minutes 10.1 seconds; one succeeded, zero failed.
-- Private product revision: `cloud-research-00012-nh7`.
-- Public event revision: `cloud-research-events-00003-cnk`.
+- Private product revision: `cloud-research-00013-8qc`.
+- Public event revision: `cloud-research-events-00004-9nm`.
+- Shared final image digest: `sha256:87ea00a630ecb7b6fc1d2347f0ebe1bdf9ae3914ff92bea3009da30591b0c02c`.
 - Firestore: `(default)`, Native mode, `us-central1`, `freeTier: true`, PITR disabled.
 
 ## Exact claims safe to say
