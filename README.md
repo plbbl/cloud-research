@@ -109,6 +109,9 @@ See [`docs/EVALUATION.md`](docs/EVALUATION.md),
 [`evals/source-audit.json`](evals/source-audit.json). These checks measure observable completion and
 link reachability; they do not claim that generated research is scientifically validated.
 
+The public contest-proof build story is published as
+[`v0.1.0`](https://github.com/plbbl/cloud-research/releases/tag/v0.1.0).
+
 ## Run locally without calling Gemini
 
 The static app, imports, and tests do not call any model:
