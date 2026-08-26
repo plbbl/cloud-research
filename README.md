@@ -3,8 +3,9 @@
 > Every researcher becomes the PI of a persistent team of AI experts.
 
 Cloud Research is a model-directed research lab built for the **Taskmaster** track of the All
-Things Agentic Hackathon. One brief recruits six Gemini experts that search, theorize, experiment,
-challenge, write, and explain while the human works on something else.
+Things Agentic Hackathon. A researcher can create multiple Labs, define each expert's name and
+role, and use one brief to recruit a Gemini team that searches, theorizes, experiments, challenges,
+writes, and explains while the human works on something else.
 
 It is not an automated-paper claim and it is not another literature summarizer. It is a research
 continuity system: the human sets the program; the lab preserves momentum and returns an
@@ -13,11 +14,11 @@ evidence-backed handoff the human can understand, challenge, and continue.
 ## The product idea
 
 Human attention is serial. Research is not. The interesting move is not to remove the scientist—it
-is to turn the scientist into a PI with a persistent expert panel.
+is to turn the scientist into a PI with persistent, purpose-built expert panels.
 
 The runtime therefore has no scripted scientific workflow. The Director sees the brief and calls
-Finder, Theorist, Experimentalist, Critic, Writer, or Explainer in whatever order the evidence
-demands. The prompts carry the research taste; the code stays thin.
+the useful experts in whatever order the evidence demands, carrying one expert's findings into the
+next call. The prompts carry the research taste; the code stays thin.
 
 ![Cloud Research architecture](docs/cloud-research-architecture.drawio.svg)
 
@@ -39,10 +40,16 @@ Cloud Run ── Google ADK Research Director
 
 ## Google stack
 
-- **Gemini 3.7 Flash** — reasoning, grounded search, specialist collaboration, and isolated code probes.
-- **Google Agent Development Kit 2.7.1** — one Director and six expert `AgentTool`s.
+- **Gemini 3.7 Flash** — reasoning, live Google Search grounding, specialist collaboration, and
+  isolated code probes for experimental roles.
+- **Gemini 2.5 Flash with Live API** — low-latency native audio conversation with the central Lab Bot,
+  including live Google Search when current evidence matters.
+- **Google Agent Development Kit 2.7.1** — one Director and a user-defined panel of expert
+  `AgentTool`s.
 - **Google Cloud Run** — the HTTPS service accepts the brief; a Cloud Run Job keeps the ADK run
   alive after the browser closes, then exits and scales back to zero.
+- **Cloud Firestore** — an append-only fact ledger for custom Labs, run evidence, and the final
+  Handoff. It stores what happened; it never chooses what science happens next.
 
 ## Prompt philosophy
 
@@ -57,16 +64,31 @@ The shared idea is: **Trust the opportunity. Doubt the candidate. Keep going.**
 The workspace shows the lab as it actually works:
 
 - the workspace becomes a group conversation where the human PI can address the whole lab or
-  `@Finder`, `@Critic`, `@Explainer`, and the other experts directly;
+  any custom expert directly with `@Name`;
+- the sidebar creates and switches between multiple Labs, while Lab Setup adds, removes, renames,
+  recolors, and rewrites the responsibility of up to twelve research experts;
 - each ADK response enters the same discussion under the speaking expert's identity;
-- an animated Cloud Research Sphere changes only gaze, blink, and posture for task feedback;
+- an animated soft-body Lab Bot changes gaze, blink, posture, and silhouette for task feedback;
+- clicking the Bot or waveform starts a native Gemini Live Audio conversation; listening,
+  thinking, speaking, interruption, and idle each have a distinct fluid expression;
 - the expert roster identifies the active researcher and its current action;
 - Cloud Run Job events are emitted as structured logs and read back into the private workspace;
+- a signed GitHub Issue label or repository dispatch can launch that same Job without an open tab;
+- Firestore preserves custom Labs, run events, and the final Handoff across scale-to-zero cold starts;
+- the selected custom Lab is rebuilt inside that Job, and its run ID is restored after a refresh or
+  browser departure;
 - Explainer has focused modes for a paper, task, the lab's own research, or a result;
 - one live conversation keeps its ADK session, so the human can keep asking sharper questions.
 
 The visual states do not control the research. They only render events produced by ADK. Scientific
 decisions remain prompt-directed.
+
+## Event-driven research
+
+Add the label `cloud-research` to a GitHub Issue containing the domain, compute budget, constraints,
+and desired handoff. A signed webhook at `/api/github/events` verifies the delivery, rejects retries,
+selects the Lab from an optional `lab:<lab_id>` label, and launches the Cloud Run Job. GitHub is an
+entry point, not a workflow engine: after launch, the ADK Director still chooses every research move.
 
 ## Run locally without calling Gemini
 
@@ -82,7 +104,11 @@ Open <http://localhost:8000>. Submitting a brief does call Gemini, so leave the 
 offline UI verification.
 
 For local live use, copy `.env.example` to `.env` and use either Vertex application-default
-credentials or a Google AI Studio key. Never commit a key.
+credentials or a service-account-bound Vertex authorization key. Text experts use
+`gemini-3.7-flash`; Vertex realtime speech uses `gemini-live-2.5-flash-native-audio`. Local Vertex
+Live also needs `CLOUD_RESEARCH_VERTEX_PROJECT` and `CLOUD_RESEARCH_VERTEX_LOCATION`; these let the
+SDK form the regional Live resource path without making ADK ignore the local key. Never commit a
+key.
 
 ## Deploy
 

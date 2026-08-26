@@ -3,6 +3,7 @@
 Project: `Cloud Research`  
 Project ID: `x-cycling-506610-p8`  
 Model: `gemini-3.7-flash`
+Live Audio model: `gemini-live-2.5-flash-native-audio`
 
 Cloud Research uses exactly the three competition layers:
 
@@ -95,10 +96,12 @@ gcloud run services update cloud-research \
   --update-env-vars=CLOUD_RESEARCH_JOB=cloud-research-shift,CLOUD_RESEARCH_JOB_LOCATION=us-central1
 ```
 
-The service calls the Cloud Run Jobs API once and returns Google's operation name plus a UUID. The
-Job invokes one ADK Director and prints structured events for real ADK authors and agent calls.
-The private service reads those events from Cloud Logging so the interface can show who is working.
-It does not invent a scientific workflow, keep a custom queue, or use a research state machine.
+The service calls the Cloud Run Jobs API once and returns Google's operation name plus a UUID. Its
+execution override includes the brief, run ID, and selected `LabSpec`. The Job reconstructs that
+exact ADK panel and prints structured events for real ADK authors and agent calls. The private
+service reads those events from Cloud Logging; the browser stores only the run ID so it can rejoin
+after refresh. It does not invent a scientific workflow, keep a custom queue, or use a research
+state machine.
 
 Do **not** click **Activate**, **Upgrade**, or convert the free trial to a paid account. Before any
 deployment, verify that the Cloud Console billing banner still says **Free trial** and shows the

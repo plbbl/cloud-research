@@ -25,7 +25,7 @@ on something else.
 
 The researcher gives Cloud Research one brief: the field, current question, known attempts,
 compute budget, and what would make the next handoff useful. A Gemini Research Director recruits
-six specialists in whatever order the evidence demands:
+the useful specialists in whatever order the evidence demands. The default Lab includes:
 
 - Finder searches for mechanism-level cracks and the nearest prior work.
 - Theorist turns the crack into a precise claim, prediction, proof, or counterexample.
@@ -35,20 +35,24 @@ six specialists in whatever order the evidence demands:
 - Explainer reconstructs what happened so the human truly understands and can challenge it.
 
 The background shift runs as a Cloud Run Job, so closing the browser does not stop the research.
-The human returns to an evidence-backed handoff, not a chat transcript.
+The current Lab definition and run ID travel with the Job. When the human returns, the interface
+reconnects to its structured Cloud Logging events and presents an evidence-backed handoff, not a
+fabricated progress animation or another chat transcript.
 
 ## How we built it
 
 Cloud Research uses Gemini 3.7 Flash through Vertex AI, Google ADK 2.7.1, and Cloud Run. One ADK
-Director sees six specialist agents as tools and decides dynamically whom to call and when. Finder
-uses Google Search grounding; Experimentalist uses Gemini built-in code execution; Writer can
-publish a durable GitHub research packet; Explainer is available both inside a research shift and
-as a standalone paper-explanation mode.
+Director sees every custom specialist as an ADK `AgentTool` and decides dynamically whom to call
+and when. Every expert can use Google Search grounding. Roles that describe experiments receive
+Gemini built-in code execution; writing roles receive artifact and GitHub publishing tools; theory
+roles receive a cheap claim-comparison tool. Explainer is available both inside a research shift
+and as a standalone paper, task, research, or result explanation mode.
 
 The HTTPS service and long-running Job share one container. The service accepts the research
-contract and launches one Job execution. The Job owns no scientific state machine: it gives the
-brief to the Director, streams evidence to Cloud Logging, publishes the handoff, and exits. Cloud
-Run handles lifetime and scale-to-zero.
+contract and launches one Job execution with the selected Lab specification. The Job owns no
+scientific state machine: it gives the brief to the Director, streams real Agent events to Cloud
+Logging, publishes the handoff, and exits. Cloud Run handles lifetime, retry policy, and
+scale-to-zero. The browser only remembers the run ID needed to rejoin.
 
 The research taste came from our existing local research system, but we deliberately did not copy
 its process machinery, databases, secrets, queues, watchdogs, or GPU launchers. We ported only the
@@ -72,6 +76,7 @@ actually justified.
 
 - A genuine multi-agent panel whose order is model-selected, not a disguised workflow graph.
 - A background Cloud Run Job that survives the browser and scales to zero afterward.
+- A resumable interface that restores the exact run from Cloud Logging after the PI returns.
 - An Explainer that makes research legible without turning it into marketing copy.
 - Gemini-native grounded search and isolated code probes with no arbitrary local code execution.
 - One container and a small deterministic core, with no imported runtime or secrets from the
@@ -95,4 +100,3 @@ living research portfolio across multiple shifts, direct pickup by local GPU exp
 paper-to-experiment lineage, and Morning Handoffs that teach the researcher how every important
 claim changed. The north star remains simple: research should keep moving, and the human should
 understand where it moved and why.
-

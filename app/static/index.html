@@ -27,8 +27,16 @@
 
         <button class="new-research" id="new-research" type="button">
           <span aria-hidden="true">+</span>
-          New research
+          New thread
         </button>
+
+        <section class="labs" aria-labelledby="labs-title">
+          <div class="section-heading">
+            <h2 id="labs-title">Labs</h2>
+            <button id="new-lab" type="button" aria-label="Create a lab">+</button>
+          </div>
+          <div class="lab-list" id="lab-list"></div>
+        </section>
 
         <nav class="primary-nav" aria-label="Research modes">
           <button class="nav-item active" data-nav-mode="research" type="button">
@@ -48,45 +56,11 @@
         </nav>
 
         <section class="team" aria-labelledby="team-title">
-          <h2 id="team-title">Your research team</h2>
-          <ul>
-            <li data-agent="finder">
-              <button class="team-member" data-mention="Finder" type="button">
-                <span class="agent-avatar finder" aria-hidden="true"></span>
-                <span class="agent-copy"><strong>Finder</strong><small>Ready</small></span>
-              </button>
-            </li>
-            <li data-agent="theorist">
-              <button class="team-member" data-mention="Theorist" type="button">
-                <span class="agent-avatar theorist" aria-hidden="true"></span>
-                <span class="agent-copy"><strong>Theorist</strong><small>Ready</small></span>
-              </button>
-            </li>
-            <li data-agent="experimentalist">
-              <button class="team-member" data-mention="Experimentalist" type="button">
-                <span class="agent-avatar experimentalist" aria-hidden="true"></span>
-                <span class="agent-copy"><strong>Experimentalist</strong><small>Ready</small></span>
-              </button>
-            </li>
-            <li data-agent="critic">
-              <button class="team-member" data-mention="Critic" type="button">
-                <span class="agent-avatar critic" aria-hidden="true"></span>
-                <span class="agent-copy"><strong>Critic</strong><small>Ready</small></span>
-              </button>
-            </li>
-            <li data-agent="writer">
-              <button class="team-member" data-mention="Writer" type="button">
-                <span class="agent-avatar writer" aria-hidden="true"></span>
-                <span class="agent-copy"><strong>Writer</strong><small>Ready</small></span>
-              </button>
-            </li>
-            <li data-agent="explainer">
-              <button class="team-member" data-mention="Explainer" type="button">
-                <span class="agent-avatar explainer" aria-hidden="true"></span>
-                <span class="agent-copy"><strong>Explainer</strong><small>Ready</small></span>
-              </button>
-            </li>
-          </ul>
+          <div class="section-heading">
+            <h2 id="team-title">Research team</h2>
+            <button id="manage-lab" type="button">Edit</button>
+          </div>
+          <ul id="team-list"></ul>
         </section>
 
         <footer class="runtime">
@@ -113,33 +87,27 @@
           <div class="greeting">
             <div class="lab-slot hero-lab-slot" id="hero-lab-slot">
               <div class="lab-presence" id="lab-presence" data-state="idle">
-                <div class="lab-bot" aria-hidden="true">
+                <button class="lab-bot" id="lab-bot" type="button" aria-label="Talk with the Lab Bot">
                   <svg viewBox="0 0 220 188" role="presentation">
-                    <defs>
-                      <radialGradient id="sphere-paint" cx="31%" cy="23%" r="78%">
-                        <stop offset="0" stop-color="#ffffff" />
-                        <stop offset="0.46" stop-color="#f4f4f1" />
-                        <stop offset="0.82" stop-color="#d9dad6" />
-                        <stop offset="1" stop-color="#bfc1bd" />
-                      </radialGradient>
-                    </defs>
-                    <ellipse class="bot-shadow" cx="110" cy="166" rx="42" ry="7" />
+                    <ellipse class="bot-shadow" cx="110" cy="158" rx="38" ry="6" />
                     <g class="bot-float">
-                      <g class="bot-sphere">
-                        <circle class="sphere-body" cx="110" cy="88" r="63" />
-                        <path class="sphere-glint" d="M72 55 C83 42 98 36 115 36" />
+                      <g class="bot-blob">
+                        <path
+                          class="blob-body"
+                          d="M58 107 C44 102 39 90 43 77 C46 65 55 58 67 56 C69 40 81 29 97 28 C109 27 119 31 127 39 C136 34 149 35 159 42 C170 50 173 65 168 77 C177 84 180 97 174 108 C167 121 153 126 140 122 C132 132 116 138 102 132 C89 136 74 131 69 121 C64 119 60 114 58 107 Z"
+                        />
                         <g class="bot-eyes">
                           <g class="eye-left">
-                            <rect class="bot-eye" x="87" y="72" width="14" height="30" rx="7" />
+                            <rect class="bot-eye" x="91" y="68" width="12" height="27" rx="6" />
                           </g>
                           <g class="eye-right">
-                            <rect class="bot-eye" x="121" y="72" width="14" height="30" rx="7" />
+                            <rect class="bot-eye" x="124" y="68" width="12" height="27" rx="6" />
                           </g>
                         </g>
                       </g>
                     </g>
                   </svg>
-                </div>
+                </button>
                 <div class="lab-copy" role="status" aria-live="polite">
                   <strong id="lab-agent">Lab ready</strong>
                   <span id="lab-action">Six experts are standing by</span>
@@ -147,7 +115,7 @@
               </div>
             </div>
             <h1 id="start-title">What should the lab pursue?</h1>
-            <p>One brief gives you a persistent team of six AI researchers.</p>
+            <p>Brief the lab. Leave. Return to evidence.</p>
           </div>
 
           <div class="start-dock" id="start-dock">
@@ -162,34 +130,6 @@
               ></textarea>
               <div class="mention-menu" id="mention-menu" hidden role="listbox" aria-label="Assign a lab member">
                 <p>Assign a lab member</p>
-                <button data-mention="Everyone" data-agent="director" type="button" role="option">
-                  <span class="agent-avatar everyone" aria-hidden="true"></span>
-                  <span><strong>Everyone</strong><small>Open to the whole lab</small></span>
-                </button>
-                <button data-mention="Finder" data-agent="finder" type="button" role="option">
-                  <span class="agent-avatar finder" aria-hidden="true"></span>
-                  <span><strong>Finder</strong><small>Literature and novelty</small></span>
-                </button>
-                <button data-mention="Theorist" data-agent="theorist" type="button" role="option">
-                  <span class="agent-avatar theorist" aria-hidden="true"></span>
-                  <span><strong>Theorist</strong><small>Mechanisms and claims</small></span>
-                </button>
-                <button data-mention="Experimentalist" data-agent="experimentalist" type="button" role="option">
-                  <span class="agent-avatar experimentalist" aria-hidden="true"></span>
-                  <span><strong>Experimentalist</strong><small>Cheap decisive probes</small></span>
-                </button>
-                <button data-mention="Critic" data-agent="critic" type="button" role="option">
-                  <span class="agent-avatar critic" aria-hidden="true"></span>
-                  <span><strong>Critic</strong><small>Falsification and repair</small></span>
-                </button>
-                <button data-mention="Writer" data-agent="writer" type="button" role="option">
-                  <span class="agent-avatar writer" aria-hidden="true"></span>
-                  <span><strong>Writer</strong><small>Research handoff</small></span>
-                </button>
-                <button data-mention="Explainer" data-agent="explainer" type="button" role="option">
-                  <span class="agent-avatar explainer" aria-hidden="true"></span>
-                  <span><strong>Explainer</strong><small>Papers, tasks, and results</small></span>
-                </button>
               </div>
               <div class="explain-targets" id="explain-targets" hidden role="group" aria-label="What to explain">
                 <button class="active" data-explain-target="paper" type="button" aria-pressed="true">Paper</button>
@@ -207,13 +147,16 @@
                 </div>
                 <div class="composer-meta">
                   <span class="execution-mode" id="execution-mode">Google Cloud</span>
-                  <span class="model-name">Gemini 3.7 Flash</span>
+                  <span class="model-name" id="model-name">Gemini 3.7 Flash</span>
+                  <button class="voice-toggle" id="voice-toggle" type="button" aria-label="Start voice conversation" aria-pressed="false">
+                    <span class="voice-wave" aria-hidden="true"><i></i><i></i><i></i></span>
+                  </button>
                   <button class="send" id="send" type="submit" aria-label="Start research">↑</button>
                 </div>
               </div>
             </form>
             <p class="composer-hint" id="prompt-hint">
-              The Director chooses the experts and keeps the work moving.
+              The Director recruits experts and carries their evidence forward.
             </p>
             <div class="suggestions" aria-label="Example briefs">
               <button
@@ -237,14 +180,9 @@
         <section class="conversation" id="conversation" hidden aria-live="polite">
           <header class="lab-chat-header">
             <div class="lab-chat-identity">
-              <div class="agent-stack" aria-hidden="true">
-                <span class="agent-avatar finder"></span>
-                <span class="agent-avatar theorist"></span>
-                <span class="agent-avatar experimentalist"></span>
-                <span class="agent-avatar critic"></span>
-              </div>
+              <div class="agent-stack" id="agent-stack" aria-hidden="true"></div>
               <div class="conversation-heading">
-                <h1>Cloud Research Lab</h1>
+                <h1 id="conversation-lab-name">Cloud Research Lab</h1>
                 <p><span id="conversation-mode">Research shift</span><span aria-hidden="true"> · </span><span id="conversation-title">Untitled research</span></p>
               </div>
             </div>
@@ -260,32 +198,7 @@
               <button class="members-close" id="members-close" type="button" aria-label="Close members">×</button>
             </div>
             <div class="lab-slot conversation-lab-slot" id="conversation-lab-slot"></div>
-            <div class="member-list">
-              <button class="lab-member" data-agent="finder" data-mention="Finder" type="button">
-                <span class="agent-avatar finder" aria-hidden="true"></span>
-                <span><strong>Finder</strong><small>Literature and novelty</small></span>
-              </button>
-              <button class="lab-member" data-agent="theorist" data-mention="Theorist" type="button">
-                <span class="agent-avatar theorist" aria-hidden="true"></span>
-                <span><strong>Theorist</strong><small>Mechanisms and claims</small></span>
-              </button>
-              <button class="lab-member" data-agent="experimentalist" data-mention="Experimentalist" type="button">
-                <span class="agent-avatar experimentalist" aria-hidden="true"></span>
-                <span><strong>Experimentalist</strong><small>Decisive probes</small></span>
-              </button>
-              <button class="lab-member" data-agent="critic" data-mention="Critic" type="button">
-                <span class="agent-avatar critic" aria-hidden="true"></span>
-                <span><strong>Critic</strong><small>Falsification and repair</small></span>
-              </button>
-              <button class="lab-member" data-agent="writer" data-mention="Writer" type="button">
-                <span class="agent-avatar writer" aria-hidden="true"></span>
-                <span><strong>Writer</strong><small>Research handoff</small></span>
-              </button>
-              <button class="lab-member" data-agent="explainer" data-mention="Explainer" type="button">
-                <span class="agent-avatar explainer" aria-hidden="true"></span>
-                <span><strong>Explainer</strong><small>Working understanding</small></span>
-              </button>
-            </div>
+            <div class="member-list" id="member-list"></div>
             <p class="members-note">You are the PI. The lab keeps the research moving.</p>
           </aside>
         </section>
@@ -294,6 +207,46 @@
         <button class="members-scrim" id="members-scrim" type="button" aria-label="Close members"></button>
       </main>
     </div>
+
+    <dialog class="lab-dialog" id="lab-dialog">
+      <form class="lab-editor" id="lab-editor">
+        <header>
+          <div>
+            <span>Cloud Research</span>
+            <h2 id="lab-dialog-title">Lab setup</h2>
+          </div>
+          <button class="dialog-close" id="lab-dialog-close" type="button" aria-label="Close lab setup">×</button>
+        </header>
+        <div class="lab-editor-fields">
+          <label>
+            <span>Lab name</span>
+            <input id="lab-name" name="name" maxlength="64" required />
+          </label>
+          <label>
+            <span>Mission</span>
+            <textarea id="lab-mission" name="mission" rows="3" maxlength="800" required></textarea>
+          </label>
+        </div>
+        <section class="agent-editor" aria-labelledby="agent-editor-title">
+          <div class="agent-editor-heading">
+            <div>
+              <h3 id="agent-editor-title">Researchers</h3>
+              <p>Every researcher uses Gemini 3.7 Flash with live Google Search.</p>
+            </div>
+            <button id="add-agent" type="button">+ Add</button>
+          </div>
+          <div class="agent-editor-list" id="agent-editor-list"></div>
+        </section>
+        <p class="lab-editor-error" id="lab-editor-error" role="alert"></p>
+        <footer>
+          <button class="delete-lab" id="delete-lab" type="button">Delete lab</button>
+          <div>
+            <button class="secondary" id="cancel-lab" type="button">Cancel</button>
+            <button class="primary" id="save-lab" type="submit">Save lab</button>
+          </div>
+        </footer>
+      </form>
+    </dialog>
 
     <script src="/static/app.js" defer></script>
   </body>

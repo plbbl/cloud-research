@@ -8,12 +8,20 @@ import uuid
 import google.auth
 from google.auth.transport.requests import AuthorizedSession
 
+from .labs import LabSpec
+from .research_ledger import ledger
+
 
 def background_research_available() -> bool:
     return bool(os.getenv("CLOUD_RESEARCH_JOB", "").strip())
 
 
-def launch_research_job(brief: str) -> dict[str, str]:
+def launch_research_job(
+    brief: str,
+    lab: LabSpec,
+    *,
+    source: str = "web",
+) -> dict[str, str]:
     """Launch the configured Cloud Run Job and return Google's operation name."""
     project = os.getenv("GOOGLE_CLOUD_PROJECT", "").strip()
     location = os.getenv("CLOUD_RESEARCH_JOB_LOCATION", "us-central1").strip()
@@ -33,6 +41,11 @@ def launch_research_job(brief: str) -> dict[str, str]:
                         "env": [
                             {"name": "RESEARCH_BRIEF", "value": brief},
                             {"name": "RESEARCH_RUN_ID", "value": run_id},
+                            {
+                                "name": "RESEARCH_LAB_SPEC",
+                                "value": lab.model_dump_json(),
+                            },
+                            {"name": "RESEARCH_SOURCE", "value": source},
                         ]
                     }
                 ]
@@ -42,9 +55,16 @@ def launch_research_job(brief: str) -> dict[str, str]:
     )
     response.raise_for_status()
     operation = response.json()
+    ledger.begin_run(
+        run_id,
+        brief=brief,
+        lab=lab.model_dump(mode="json"),
+        source=source,
+    )
     return {
         "operation": operation["name"],
         "run_id": run_id,
+        "lab_id": lab.id,
         "message": (
             "The expert panel is working in Cloud Run. You can leave now. This page will keep "
             "showing who is moving the research forward."

@@ -60,11 +60,22 @@ covered by the private-service smoke test above.
 
 ## Automated checks after live-event work
 
-- 20 Python tests passed.
+- 31 Python tests passed.
 - JavaScript syntax check passed.
 - Ruff passed.
 - Structured event tests cover agent-to-expression mapping, safe UUID filters, Cloud Logging order,
-  Cloud Run Job overrides, and the run-status API.
+  selected-Lab Cloud Run Job overrides, custom-role capability inference, browser-run restoration,
+  and the run-status API.
+
+## Final contest-path verification
+
+- A no-cost Job double exercised the production `/api/dispatch` and `/api/runs/{run_id}` contract.
+- The interface showed the real run ID, normalized the active expert's name, rendered a clickable
+  evidence link, and kept the complete Handoff above the fixed composer.
+- Reloading during the unfinished run restored the same Lab, brief, run ID, and Finder activity
+  without submitting a second Job.
+- `cloud-research:verify` built successfully from the repository Dockerfile and returned a healthy
+  Gemini 3.7 Flash / Vertex AI / Google ADK / Cloud Run stack from inside the container.
 
 ## Group-lab interaction
 

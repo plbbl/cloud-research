@@ -1,4 +1,5 @@
 from app.cloud_run import launch_research_job
+from app.labs import DEFAULT_LAB
 
 
 def test_launch_job_adds_a_traceable_run_id(monkeypatch) -> None:
@@ -27,12 +28,15 @@ def test_launch_job_adds_a_traceable_run_id(monkeypatch) -> None:
     monkeypatch.setattr("app.cloud_run.google.auth.default", lambda scopes: (object(), None))
     monkeypatch.setattr("app.cloud_run.AuthorizedSession", Session)
 
-    result = launch_research_job("Find a decisive test.")
+    result = launch_research_job("Find a decisive test.", DEFAULT_LAB)
 
     env = calls["body"]["overrides"]["containerOverrides"][0]["env"]
     assert {item["name"]: item["value"] for item in env} == {
         "RESEARCH_BRIEF": "Find a decisive test.",
         "RESEARCH_RUN_ID": run_id,
+        "RESEARCH_LAB_SPEC": DEFAULT_LAB.model_dump_json(),
+        "RESEARCH_SOURCE": "web",
     }
     assert result["run_id"] == run_id
     assert result["operation"] == "operations/research-operation"
+    assert result["lab_id"] == DEFAULT_LAB.id

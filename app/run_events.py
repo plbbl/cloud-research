@@ -11,6 +11,8 @@ from typing import Any
 import google.auth
 from google.auth.transport.requests import AuthorizedSession
 
+from .research_ledger import ledger
+
 AGENT_STATES = {
     "cloud_research": ("director", "directing", "Director is assembling the expert panel"),
     "director": ("director", "directing", "Director is assembling the expert panel"),
@@ -63,6 +65,20 @@ class ResearchEventEmitter:
         if output:
             payload["output"] = output
         print(json.dumps(payload, ensure_ascii=False), flush=True)
+        try:
+            ledger.append_event(self.run_id, payload)
+        except Exception as exc:  # Cloud Logging remains the durable fallback.
+            print(
+                json.dumps(
+                    {
+                        "cloud_research_ledger_warning": True,
+                        "run_id": self.run_id,
+                        "detail": str(exc),
+                    },
+                    ensure_ascii=False,
+                ),
+                flush=True,
+            )
         return payload
 
     def presence(self, name: str, detail: str = "") -> dict[str, Any]:
@@ -78,6 +94,13 @@ def validate_run_id(run_id: str) -> str:
 def list_research_events(run_id: str) -> list[dict[str, Any]]:
     """Read one job's structured events from Cloud Logging."""
     canonical_run_id = validate_run_id(run_id)
+    if ledger.enabled:
+        try:
+            events = ledger.list_events(canonical_run_id)
+            if events:
+                return events
+        except Exception:
+            pass
     project = os.getenv("GOOGLE_CLOUD_PROJECT", "").strip()
     job = os.getenv("CLOUD_RESEARCH_JOB", "").strip()
     if not project or not job:

@@ -6,30 +6,53 @@ import asyncio
 import os
 import uuid
 
+from google.adk.apps import App
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-from .agent import app
+from .agent import app as default_app
+from .lab_agents import build_lab_agent
+from .labs import DEFAULT_LAB, LabSpec
+from .research_ledger import ledger
 from .run_events import ResearchEventEmitter, agent_presence
 
 
 def research_job_prompt(brief: str) -> str:
-    return f"""Take over this research program while the human is away:
+    return f"""Continue this research program while the human is away:
 
 {brief}
 
-Use any experts, in any order, until no honest progress remains. Before ending, ask Explainer to
-make the result genuinely understandable and Writer to publish one complete research packet."""
+Use any available experts, in any order, until further work would only repeat. Carry their evidence
+between calls. End with one understandable, evidence-backed Handoff and publish its Artifact when a
+publishing expert is available."""
+
+
+def research_job_app(raw_lab: str | None = None) -> App:
+    """Rebuild the selected prompt-directed lab in this isolated execution."""
+    raw_lab = raw_lab if raw_lab is not None else os.getenv("RESEARCH_LAB_SPEC", "")
+    if not raw_lab.strip():
+        return default_app
+    lab = LabSpec.model_validate_json(raw_lab)
+    return App(name=lab.id, root_agent=build_lab_agent(lab))
 
 
 async def run() -> str:
     brief = os.environ["RESEARCH_BRIEF"].strip()
     run_id = os.getenv("RESEARCH_RUN_ID", str(uuid.uuid4()))
+    raw_lab = os.getenv("RESEARCH_LAB_SPEC", "")
+    lab = LabSpec.model_validate_json(raw_lab) if raw_lab.strip() else DEFAULT_LAB
+    ledger.begin_run(
+        run_id,
+        brief=brief,
+        lab=lab.model_dump(mode="json"),
+        source=os.getenv("RESEARCH_SOURCE", "cloud-run-job"),
+    )
     events = ResearchEventEmitter(run_id)
     events.presence("director")
     session_id = str(uuid.uuid4())
     user_id = "human-pi"
+    app = research_job_app(raw_lab)
     sessions = InMemorySessionService()
     await sessions.create_session(
         app_name=app.name,

@@ -10,9 +10,9 @@ On camera: the empty research brief.
 
 ## 0:25–0:55 — One brief
 
-Paste a real narrow brief with a compute limit, for example small-model test-time adaptation on one
-24 GB GPU. Click **Start research**. Show that Cloud Run returns an execution name immediately.
-Close the tab.
+Create a small custom Lab, rename one expert, and give its experiment role a one-line mission. Paste
+a real narrow brief with a compute limit, for example small-model test-time adaptation on one 24 GB
+GPU. Click **Start research**. Point out the returned run ID, then close the tab.
 
 ## 0:55–1:25 — Proof of Action (unedited)
 
@@ -20,24 +20,26 @@ In Google Cloud Console, show:
 
 1. the `cloud-research-shift` Cloud Run Job execution;
 2. the container image and `gemini-3.7-flash` environment;
-3. live logs naming Finder, Theorist, Experimentalist, Critic, Writer, and Explainer.
+3. live structured logs naming the custom Lab and the experts Gemini actually recruited.
 
 Keep this one continuous, unedited recording segment.
 
 ## 1:25–2:35 — The interesting work
 
-Show three decisive moments, not every message:
+Reopen the product and show that it reconnects to the same run ID without re-submitting the brief.
+Then show three decisive moments, not every message:
 
 - Finder surfaces a mechanism-level crack and nearest work with citations.
 - Critic kills or repairs the first candidate instead of approving it.
 - Experimentalist runs a cheap code probe and the result changes the claim.
 
-Say explicitly: there is no fixed pipeline. The Director chooses each expert because of the
-evidence it currently has.
+Say explicitly: there is no fixed pipeline and the interface does not invent progress. The Director
+chooses each expert because of the evidence it currently has; Cloud Run only owns execution
+lifetime.
 
 ## 2:35–3:15 — The handoff
 
-Open the generated GitHub branch and show:
+Show the Handoff in the product and, when GitHub is configured, open its generated branch:
 
 - the surviving claim;
 - evidence and citations;
@@ -56,4 +58,3 @@ old default → surprise → what was done → decisive evidence → uncertainty
 > The expert panel keeps it moving. You return able to understand, challenge, and decide.
 
 End on: **Every researcher becomes the PI of a 24/7 research team.**
-
