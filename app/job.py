@@ -6,6 +6,7 @@ import asyncio
 import os
 import uuid
 
+from google.adk.agents.run_config import RunConfig
 from google.adk.apps import App
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -17,15 +18,27 @@ from .labs import DEFAULT_LAB, LabSpec
 from .research_ledger import ledger
 from .run_events import ResearchEventEmitter, agent_presence
 
+DEFAULT_RESEARCH_BRIEF = """Run a bounded Cloud Research smoke shift.
+Use only the Explainer and Writer experts. Explain why a four-line counterexample can invalidate
+a universal claim, preserve the explanation as a short handoff, and stop. Do not search the web,
+publish to GitHub, or run a real benchmark."""
+
+
+def research_job_brief() -> str:
+    """Return the submitted brief or a safe, bounded console-execution brief."""
+    return os.getenv("RESEARCH_BRIEF", DEFAULT_RESEARCH_BRIEF).strip() or DEFAULT_RESEARCH_BRIEF
+
 
 def research_job_prompt(brief: str) -> str:
     return f"""Continue this research program while the human is away:
 
 {brief}
 
-Use any available experts, in any order, until further work would only repeat. Carry their evidence
-between calls. End with one understandable, evidence-backed Handoff and publish its Artifact when a
-publishing expert is available."""
+Treat the brief as the execution contract. If it says smoke, bounded, or stop, use only the named
+experts once each and return immediately; do not search, publish, benchmark, or recruit extra
+experts when the brief forbids it. Otherwise make only the smallest number of useful moves. Carry
+evidence between calls, then end with one understandable, evidence-backed Handoff. Publish an
+Artifact only when the brief explicitly allows publishing."""
 
 
 def research_job_app(raw_lab: str | None = None) -> App:
@@ -38,7 +51,7 @@ def research_job_app(raw_lab: str | None = None) -> App:
 
 
 async def run() -> str:
-    brief = os.environ["RESEARCH_BRIEF"].strip()
+    brief = research_job_brief()
     run_id = os.getenv("RESEARCH_RUN_ID", str(uuid.uuid4()))
     raw_lab = os.getenv("RESEARCH_LAB_SPEC", "")
     lab = LabSpec.model_validate_json(raw_lab) if raw_lab.strip() else DEFAULT_LAB
@@ -68,6 +81,9 @@ async def run() -> str:
             new_message=types.Content(
                 role="user",
                 parts=[types.Part(text=research_job_prompt(brief))],
+            ),
+            run_config=RunConfig(
+                max_llm_calls=int(os.getenv("CLOUD_RESEARCH_MAX_LLM_CALLS", "12")),
             ),
         ):
             parts = event.content.parts if event.content else []

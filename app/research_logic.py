@@ -1,4 +1,4 @@
-"""Small, deterministic helpers ported from the existing research system.
+"""Small, deterministic helpers created for the Cloud Research lab.
 
 There is intentionally no workflow engine here. The model decides what research
 to do; these helpers only let it compare claims and preserve useful artifacts.

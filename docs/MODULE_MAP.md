@@ -1,22 +1,26 @@
-# Existing system → Cloud Research
+# Cloud Research modules
 
-The original system at `/Users/a1234/Desktop/auto research` remains read-only. This project does
-not import its runtime, databases, runs, secrets, watchdogs, queues, or GPU launchers.
+Cloud Research was built from scratch during the hackathon submission period. It is a thin,
+prompt-directed research lab, not a wrapper around an earlier application runtime. The human PI
+sets the question, boundary, and compute budget; Gemini experts decide which useful move comes next.
 
-| Existing capability | Cloud Research version | Why |
+| Module | Responsibility | Google / cloud surface |
 | --- | --- | --- |
-| Find-task prompts and discovery operators | `finder` | Preserves the taste for mechanism cracks, nearest work, and cheap falsifiers. Google Search supplies live evidence. |
-| Topic pusher / critic / chief | `theorist` + `critic` + model-led Director | Preserves optimistic adversarial research without encoding a committee workflow. |
-| CPU/GPU experiment workers | `experimentalist` | Uses Gemini built-in isolated Python execution for cheap probes. Expensive local GPU work remains a handoff. |
-| Candidate overlap helpers | `research_logic.py` | Ports only deterministic lexical helpers; Gemini still judges mechanism-level novelty. |
-| Manuscript and report writers | `writer` | Produces an evidence-backed packet and can publish it to a GitHub branch. |
-| Human-facing explainer | `explainer` | Makes a research run or paper genuinely understandable, not merely shorter. |
-| Local dashboard | Cloud Run web surface | One prompt starts the team; ADK streams the public research notebook. |
+| Director | Reads the brief and recruits useful experts in any order. | Google ADK `Agent` + `AgentTool`; Gemini 3.7 Flash on Vertex AI |
+| Finder | Maps live papers, code, and the nearest research opening. | Google Search grounding |
+| Theorist | Sharpens mechanisms, predictions, proofs, and counterexamples. | Gemini reasoning + claim comparison tool |
+| Experimentalist | Runs the cheapest decisive probe available. | ADK built-in code execution |
+| Critic | Attacks novelty, evidence, mechanism, and the obvious alternative. | Gemini adversarial review |
+| Writer | Preserves evidence, failures, unknowns, and the next task. | Artifact tool + optional GitHub branch |
+| Explainer | Rebuilds a task, paper, result, or handoff in plain language. | Gemini response in chat or Live debrief |
+| Research Job | Keeps one prompt-led shift alive after the browser closes. | Cloud Run Jobs |
+| Fact ledger | Stores append-only labs, events, delivery claims, and handoffs. | Cloud Firestore |
+| Event gateway | Verifies a signed GitHub event and launches the selected Job. | Cloud Run + Secret Manager + HMAC |
+| Lab UI | Lets a human create labs, edit roles, @mention experts, and rejoin a run. | Cloud Run web service + Firestore |
+| Live debrief | Lets the PI question the finished research aloud. | Gemini Live native audio |
 
 ## The deliberate deletion
 
-The old system needs many states because it coordinates local processes. The hackathon version
-does not imitate that machinery. One ADK Director can recruit any expert, any number of times, in
-whatever order the evidence demands. Cloud Run owns the process lifetime; GitHub or a Markdown
-artifact owns the handoff. There is no scientific state machine between them.
-
+The scientific path is not encoded as a custom state machine. Short prompts carry the research
+taste and evidence labels; ADK lets the Director choose the next expert, and Cloud Run owns only
+process lifetime and retry policy. Firestore stores facts, not scientific routing decisions.

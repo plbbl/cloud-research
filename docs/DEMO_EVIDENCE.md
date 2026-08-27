@@ -20,6 +20,8 @@ must remain qualified.
 - Cloud Run Job execution: `cloud-research-shift-6mnfr`.
 - Run ID: `363dea89-6ece-4eeb-9f6c-7d49cad4f703`.
 - Job result: completed in 8 minutes 10.1 seconds; one succeeded, zero failed.
+- Clean public proof Job: `cloud-research-proof`, with five consecutive executions
+  (`hsqz6`, `z44xp`, `wmz4p`, `prpmg`, `9rshz`) all showing `1/1 completed` and exit code `0`.
 - Private product revision: `cloud-research-00013-8qc`.
 - Public event revision: `cloud-research-events-00004-9nm`.
 - Shared final image digest: `sha256:87ea00a630ecb7b6fc1d2347f0ebe1bdf9ae3914ff92bea3009da30591b0c02c`.
@@ -28,6 +30,9 @@ must remain qualified.
 ## Exact claims safe to say
 
 - A signed GitHub label launched a custom Gemini/ADK research Lab without an open browser.
+- The dedicated Cloud Run proof Job has five consecutive successful executions; this is the history
+  shown in the submission video, while the continuous detail capture supplies the live Proof of
+  Action.
 - The run emitted eight real events across six user-defined experts and published a branch.
 - Three cross-domain Jobs completed; 23 of 24 unique cited URLs resolved.
 - Gemini Live returned 42 audio frames and a transcript grounded in the supplied Handoff.

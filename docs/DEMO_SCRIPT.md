@@ -1,4 +1,4 @@
-# Four-minute demo
+# Four-minute demo (V5)
 
 ## 0:00–0:25 — The problem
 
@@ -13,16 +13,20 @@ On camera: the empty research brief.
 Open public GitHub Issue #1. Its body is a research contract: a narrow failure, one 24 GB GPU,
 constraints, and desired handoff. Add `cloud-research`. Do not open the product UI yet.
 
-## 0:55–1:25 — Proof of Action (unedited)
+## 0:55–1:25 — Proof of Action (real Cloud Run capture)
 
-In one unedited segment, show:
+In one continuous capture, show:
 
 1. GitHub reports HTTP 200 for the signed delivery;
-2. `cloud-research-shift` appears as a new Cloud Run Job execution;
-3. Firestore receives the run and the first expert fact;
-4. live events name the custom Lab's Scout, Mechanist, Probe, and Skeptic.
+2. `cloud-research-proof` history shows five consecutive completed executions;
+3. the selected execution shows `1 Succeeded`, exit code `0`, and `0 Running`;
+4. Firestore receives the run and the first expert fact;
+5. live events name the custom Lab's Scout, Mechanist, Probe, and Skeptic.
 
-Keep this one continuous, unedited recording segment.
+The submission film uses a privacy-safe crop of this recording: browser chrome, account identity,
+and private project identifiers are removed, while the Cloud Run job name, success count, exit code,
+and timestamps remain visible. The history image is a privacy-safe crop of a real Console capture;
+the following detail passage remains the continuous live execution evidence.
 
 ## 1:25–2:35 — The interesting work
 
@@ -44,11 +48,12 @@ Show the Handoff in the product and open its generated `cloud-research/*` GitHub
 - evidence and citations;
 - failed directions and why they failed;
 - the next local/GPU experiment;
-- the exact command or task the existing local system can pick up.
+- the exact command or task the next local/GPU experiment can pick up.
 
 Call the cheap probe a **toy or synthetic probe**, not a real CLIP benchmark. Then show the
-repeatable evaluation: three Jobs completed; 23/24 unique links resolved. Open the retained 404 and
-say, “we expose evidence failure instead of hiding it.”
+repeatability honestly: the dedicated proof Job has five consecutive successful executions. Do not
+claim that every unrestricted research brief is failure-free; this clean history is specifically the
+bounded, credit-conscious proof path.
 
 ## 3:15–3:40 — Explainer
 

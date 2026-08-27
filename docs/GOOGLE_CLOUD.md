@@ -1,7 +1,7 @@
 # Google Cloud setup
 
 Project: `Cloud Research`  
-Project ID: `x-cycling-506610-p8`  
+Project ID: `YOUR_PROJECT_ID`
 Model: `gemini-3.7-flash`
 Live Audio model: `gemini-live-2.5-flash-native-audio`
 
@@ -24,7 +24,7 @@ gcloud services enable \
   logging.googleapis.com \
   firestore.googleapis.com \
   secretmanager.googleapis.com \
-  --project=x-cycling-506610-p8
+  --project=YOUR_PROJECT_ID
 ```
 
 ## Service identity
@@ -32,19 +32,19 @@ gcloud services enable \
 ```bash
 gcloud iam service-accounts create cloud-research-run \
   --display-name="Cloud Research on Cloud Run" \
-  --project=x-cycling-506610-p8
+  --project=YOUR_PROJECT_ID
 
-gcloud projects add-iam-policy-binding x-cycling-506610-p8 \
-  --member="serviceAccount:cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:cloud-research-run@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/aiplatform.user"
 
 # The private service reads only this project's structured research-shift events.
-gcloud projects add-iam-policy-binding x-cycling-506610-p8 \
-  --member="serviceAccount:cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:cloud-research-run@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/logging.viewer"
 
-gcloud projects add-iam-policy-binding x-cycling-506610-p8 \
-  --member="serviceAccount:cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:cloud-research-run@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/datastore.user"
 ```
 
@@ -60,10 +60,10 @@ the already-active free-trial credits attached to the project.
 ```bash
 gcloud run deploy cloud-research \
   --source=. \
-  --project=x-cycling-506610-p8 \
+  --project=YOUR_PROJECT_ID \
   --region=us-central1 \
-  --service-account=cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com \
-  --set-env-vars=GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=x-cycling-506610-p8,GOOGLE_CLOUD_LOCATION=global,CLOUD_RESEARCH_MODEL=gemini-3.7-flash,CLOUD_RESEARCH_LIVE_MODEL=gemini-live-2.5-flash-native-audio,CLOUD_RESEARCH_VERTEX_PROJECT=x-cycling-506610-p8,CLOUD_RESEARCH_VERTEX_LOCATION=us-central1,CLOUD_RESEARCH_FIRESTORE_DATABASE='(default)' \
+  --service-account=cloud-research-run@YOUR_PROJECT_ID.iam.gserviceaccount.com \
+  --set-env-vars=GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID,GOOGLE_CLOUD_LOCATION=global,CLOUD_RESEARCH_MODEL=gemini-3.7-flash,CLOUD_RESEARCH_LIVE_MODEL=gemini-live-2.5-flash-native-audio,CLOUD_RESEARCH_VERTEX_PROJECT=YOUR_PROJECT_ID,CLOUD_RESEARCH_VERTEX_LOCATION=us-central1,CLOUD_RESEARCH_FIRESTORE_DATABASE='(default)' \
   --min-instances=0 \
   --max-instances=1 \
   --cpu=1 \
@@ -76,15 +76,15 @@ Reuse the exact built image for the background research job, then tell the servi
 
 ```bash
 IMAGE="$(gcloud run services describe cloud-research \
-  --project=x-cycling-506610-p8 \
+  --project=YOUR_PROJECT_ID \
   --region=us-central1 \
   --format='value(spec.template.spec.containers[0].image)')"
 
 gcloud run jobs create cloud-research-shift \
   --image="$IMAGE" \
-  --project=x-cycling-506610-p8 \
+  --project=YOUR_PROJECT_ID \
   --region=us-central1 \
-  --service-account=cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com \
+  --service-account=cloud-research-run@YOUR_PROJECT_ID.iam.gserviceaccount.com \
   --command=/workspace/.venv/bin/python \
   --args=-m,app.job \
   --tasks=1 \
@@ -93,16 +93,16 @@ gcloud run jobs create cloud-research-shift \
   --task-timeout=3600 \
   --cpu=1 \
   --memory=1Gi \
-  --set-env-vars=GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=x-cycling-506610-p8,GOOGLE_CLOUD_LOCATION=global,CLOUD_RESEARCH_MODEL=gemini-3.7-flash
+  --set-env-vars=GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID,GOOGLE_CLOUD_LOCATION=global,CLOUD_RESEARCH_MODEL=gemini-3.7-flash
 
 gcloud run jobs add-iam-policy-binding cloud-research-shift \
-  --project=x-cycling-506610-p8 \
+  --project=YOUR_PROJECT_ID \
   --region=us-central1 \
-  --member="serviceAccount:cloud-research-run@x-cycling-506610-p8.iam.gserviceaccount.com" \
+  --member="serviceAccount:cloud-research-run@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/run.jobsExecutorWithOverrides"
 
 gcloud run services update cloud-research \
-  --project=x-cycling-506610-p8 \
+  --project=YOUR_PROJECT_ID \
   --region=us-central1 \
   --update-env-vars=CLOUD_RESEARCH_JOB=cloud-research-shift,CLOUD_RESEARCH_JOB_LOCATION=us-central1
 ```
@@ -113,6 +113,12 @@ exact ADK panel and appends structured facts for real ADK authors and agent call
 service reads those facts from Firestore, with Cloud Logging as an operational fallback. The browser
 stores only the run ID so it can rejoin after refresh. It does not invent a scientific workflow,
 keep a custom queue, or use a research state machine.
+
+For repeatable smoke runs, the Job also applies a small model-call ceiling. The current deployed
+value is `CLOUD_RESEARCH_MAX_LLM_CALLS=12`; the default brief names only Explainer and Writer and
+stops after the handoff. This makes a direct Cloud Run Execute reproducible without pretending that
+a short proof run is a full overnight research program. A production brief can raise the ceiling
+deliberately, but the value must remain visible in the run configuration.
 
 Do **not** click **Activate**, **Upgrade**, or convert the free trial to a paid account. Before any
 deployment, verify that the Cloud Console billing banner still says **Free trial** and shows the
@@ -125,7 +131,7 @@ The model surface remains authenticated. Only a separate two-route ASGI app is p
 payload, deduplicates the delivery in Firestore, and can launch only `cloud-research-shift`.
 
 It runs as `cloud-research-events` with its own identity,
-`cloud-research-events@x-cycling-506610-p8.iam.gserviceaccount.com`. That identity has only:
+`cloud-research-events@YOUR_PROJECT_ID.iam.gserviceaccount.com`. That identity has only:
 
 - `roles/run.jobsExecutorWithOverrides` on the one Job;
 - `roles/datastore.user` for delivery facts;
@@ -138,9 +144,9 @@ gcloud run deploy cloud-research-events \
   --source=. \
   --command=/workspace/.venv/bin/uvicorn \
   --args=app.webhook_app:app,--host,0.0.0.0,--port,8080 \
-  --service-account=cloud-research-events@x-cycling-506610-p8.iam.gserviceaccount.com \
-  --region=us-central1 --project=x-cycling-506610-p8 \
-  --set-env-vars='GOOGLE_CLOUD_PROJECT=x-cycling-506610-p8,CLOUD_RESEARCH_FIRESTORE_DATABASE=(default),CLOUD_RESEARCH_JOB=cloud-research-shift,CLOUD_RESEARCH_JOB_LOCATION=us-central1' \
+  --service-account=cloud-research-events@YOUR_PROJECT_ID.iam.gserviceaccount.com \
+  --region=us-central1 --project=YOUR_PROJECT_ID \
+  --set-env-vars='GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID,CLOUD_RESEARCH_FIRESTORE_DATABASE=(default),CLOUD_RESEARCH_JOB=cloud-research-shift,CLOUD_RESEARCH_JOB_LOCATION=us-central1' \
   --set-secrets=GITHUB_WEBHOOK_SECRET=cloud-research-webhook-secret:latest \
   --min-instances=0 --max-instances=1 --concurrency=20 --memory=512Mi \
   --allow-unauthenticated
@@ -153,5 +159,5 @@ launched `cloud-research-shift-6mnfr`, which completed successfully and publishe
 
 When `GITHUB_TOKEN` and `GITHUB_REPOSITORY` are injected as environment variables (preferably from
 Secret Manager), Writer creates or updates a `cloud-research/*` branch. Without them, the complete
-handoff remains in Cloud Run logs and the local artifact directory. No credential from the
-existing research system is ever copied into this project.
+handoff remains in Cloud Run logs and the local artifact directory. No credential from another
+application is ever copied into this project.

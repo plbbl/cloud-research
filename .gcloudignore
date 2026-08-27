@@ -10,4 +10,8 @@ __pycache__
 tests
 docs
 lab
-
+video
+.cloud-research
+artifacts
+evals
+scripts

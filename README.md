@@ -101,6 +101,11 @@ write Firestore delivery facts, and read only the webhook secret.
   public research branch—without an open browser.
 - Three repeatable cross-domain Jobs completed in 347.6–429.9 seconds with 7–8 real expert events
   each. All three preserved killed paths, unknowns, a next task, an artifact, and source URLs.
+- A dedicated bounded Cloud Run proof Job (`cloud-research-proof`) was then executed five times in
+  sequence. Every execution completed with one succeeded task and exit code 0; its clean history is
+  the five-row Console capture used in the V5 film.
+- The V5 film then shows the real English Cloud Run execution page for a successful deployed run,
+  with browser chrome and private identifiers cropped, rather than a simulated cloud panel.
 - A separate transport audit reached 23 of 24 unique source URLs. The retained 404 is a measured
   evidence-integrity failure, not a result we edited away.
 
@@ -108,6 +113,9 @@ See [`docs/EVALUATION.md`](docs/EVALUATION.md),
 [`evals/latest-results.json`](evals/latest-results.json), and
 [`evals/source-audit.json`](evals/source-audit.json). These checks measure observable completion and
 link reachability; they do not claim that generated research is scientifically validated.
+
+The bounded cloud repeatability record, including the five clean proof executions, is in
+[`docs/CLOUD_RUN_RELIABILITY.md`](docs/CLOUD_RUN_RELIABILITY.md).
 
 The public contest-proof build story is published as
 [`v0.1.0`](https://github.com/plbbl/cloud-research/releases/tag/v0.1.0).
@@ -144,10 +152,12 @@ control.
 See [`docs/SMOKE_TESTS.md`](docs/SMOKE_TESTS.md) for the real private-service, Live, Cloud Run Job,
 GitHub event, Firestore, container, and UI checks.
 
-## Where the existing system went
+## Build provenance
 
-See [`docs/MODULE_MAP.md`](docs/MODULE_MAP.md). Only scientific taste and small pure helpers were
-ported. The existing system was not edited, imported, started, or given to the Cloud Run container.
+Cloud Research was built from scratch during the hackathon submission period. The application code,
+agent roles, prompts, Cloud Run surface, Firestore ledger, GitHub gateway, and UI were created
+specifically for this submission; no pre-existing application runtime or private credentials are
+part of the deployment.
 
 ## Open-source attribution
 
